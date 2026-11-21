@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import HomeSection from '../components/sections/HomeSection';
 import { getPosts, getFeaturedImageUrl, getPostCategories, hasValidCategory } from '../lib/wordpress';
 import { ArrowRight, Calendar, Newspaper } from 'lucide-react';
+import { url } from '../lib/base';
 
 const rawPosts = await getPosts(10);
 // REGLA: Entrada que no tenga categorías no mostrarla en ningún lado
@@ -28,7 +29,7 @@ const posts = rawPosts.filter(hasValidCategory).slice(0, 3);
         </p>
       </div>
       <a
-        href="/blog"
+        href={url('/blog')}
         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-primary hover:bg-sky-700 text-white font-bold text-sm shadow-md transition-all self-start md:self-auto cursor-pointer"
       >
         Ver Todo el Blog
@@ -79,7 +80,7 @@ const posts = rawPosts.filter(hasValidCategory).slice(0, 3);
                   </div>
 
                   <h3 class="font-display font-bold text-lg text-slate-900 group-hover:text-brand-primary transition-colors line-clamp-2 leading-snug">
-                    <a href={`/blog/${post.slug}`}>
+                    <a href={url(`/blog/${post.slug}`)}>
                       <span set:html={post.title.rendered} />
                     </a>
                   </h3>
@@ -91,7 +92,7 @@ const posts = rawPosts.filter(hasValidCategory).slice(0, 3);
                 </div>
 
                 <a
-                  href={`/blog/${post.slug}`}
+                  href={url(`/blog/${post.slug}`)}
                   class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-primary hover:text-sky-800 transition-colors pt-2 border-t border-slate-50"
                 >
                   Leer artículo completo

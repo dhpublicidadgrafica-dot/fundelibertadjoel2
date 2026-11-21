@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { MapPin, Phone, Mail, Send, CheckCircle2, Heart, ExternalLink, Calendar, Compass, Search } from 'lucide-react';
-import { ContactMessage } from '../../types';
+import type { ContactMessage } from '../../types';
 
 export default function ContactSection() {
   const [name, setName] = useState('');

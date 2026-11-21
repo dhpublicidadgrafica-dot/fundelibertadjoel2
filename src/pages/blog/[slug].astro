@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import { getPosts, getPostBySlug, getFeaturedImageUrl, getPostCategories, getAuthorName, hasValidCategory, type WPPost } from '../../lib/wordpress';
 import { Calendar, User, ArrowLeft, Tag, Heart, Share2, MessageCircle } from 'lucide-react';
+import { url } from '../../lib/base';
 
 export async function getStaticPaths() {
   const posts = await getPosts(100);
@@ -16,7 +17,7 @@ const { post: staticPost } = Astro.props;
 const post = (staticPost as WPPost) || (slug ? await getPostBySlug(slug) : null);
 
 if (!post) {
-  return Astro.redirect('/blog');
+  return Astro.redirect(url('/blog'));
 }
 
 const featuredImg = getFeaturedImageUrl(post, 'https://lh3.googleusercontent.com/d/1mzMGHUgDdHcX8hpf8DTMLIs2Dv53CCsd');
@@ -38,7 +39,7 @@ const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
     {/* Breadcrumbs / Back button */}
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
       <a
-        href="/blog"
+        href={url('/blog')}
         class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-brand-primary transition-colors bg-white px-3.5 py-2 rounded-xl shadow-2xs border border-slate-200 cursor-pointer"
       >
         <ArrowLeft className="w-4 h-4" />

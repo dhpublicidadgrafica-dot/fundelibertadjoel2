@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { Mail, Phone, MapPin, Heart, ExternalLink } from 'lucide-react';
+import { url } from '../lib/base';
 
 interface FooterProps {
   onDonateClick?: () => void;
@@ -101,27 +102,27 @@ export default function Footer({ onDonateClick }: FooterProps) {
           </h5>
           <ul className="space-y-2.5 text-xs text-slate-400" id="footer-links-quick">
             <li>
-              <a href="/" className="hover:text-white hover:underline transition-all cursor-pointer">
+              <a href={url('/')} className="hover:text-white hover:underline transition-all cursor-pointer">
                 Inicio / Impacto
               </a>
             </li>
             <li>
-              <a href="/nosotros" className="hover:text-white hover:underline transition-all cursor-pointer">
+              <a href={url('/nosotros')} className="hover:text-white hover:underline transition-all cursor-pointer">
                 Nuestra Historia y Valores
               </a>
             </li>
             <li>
-              <a href="/servicios" className="hover:text-white hover:underline transition-all cursor-pointer">
+              <a href={url('/servicios')} className="hover:text-white hover:underline transition-all cursor-pointer">
                 Asesorías Gratuitas (19 áreas)
               </a>
             </li>
             <li>
-              <a href="/proyectos" className="hover:text-white hover:underline transition-all cursor-pointer">
+              <a href={url('/proyectos')} className="hover:text-white hover:underline transition-all cursor-pointer">
                 Proyectos Sociales en Comuna 15
               </a>
             </li>
             <li>
-              <a href="/actividades" className="hover:text-white hover:underline transition-all cursor-pointer">
+              <a href={url('/actividades')} className="hover:text-white hover:underline transition-all cursor-pointer">
                 Actividades y Eventos
               </a>
             </li>
@@ -135,22 +136,22 @@ export default function Footer({ onDonateClick }: FooterProps) {
           </h5>
           <ul className="space-y-2.5 text-xs text-slate-400" id="footer-links-programs">
             <li>
-              <a href="/programas/practicas-pasantias" className="hover:text-white hover:underline transition-all cursor-pointer">
+              <a href={url('/programas/practicas-pasantias')} className="hover:text-white hover:underline transition-all cursor-pointer">
                 Postulación a Prácticas y Pasantías
               </a>
             </li>
             <li>
-              <a href="/programas/informes-denuncias-ddhh" className="hover:text-white hover:underline transition-all cursor-pointer">
+              <a href={url('/programas/informes-denuncias-ddhh')} className="hover:text-white hover:underline transition-all cursor-pointer">
                 Reportar Vulneración de DDHH (Confidencial)
               </a>
             </li>
             <li>
-              <a href="/programas/asesoria-juridica-comunitaria" className="hover:text-white hover:underline transition-all cursor-pointer">
+              <a href={url('/programas/asesoria-juridica-comunitaria')} className="hover:text-white hover:underline transition-all cursor-pointer">
                 Solicitud de Asesoría Legal Gratuita
               </a>
             </li>
             <li>
-              <a href="/contacto" className="hover:text-white hover:underline transition-all cursor-pointer">
+              <a href={url('/contacto')} className="hover:text-white hover:underline transition-all cursor-pointer">
                 Contacto Directo
               </a>
             </li>

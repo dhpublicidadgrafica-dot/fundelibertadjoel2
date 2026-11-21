@@ -9,6 +9,7 @@ import { Calendar, Eye, X, ArrowRight, Search } from 'lucide-react';
 import { PROJECTS_LIST } from '../../data';
 import AdaptiveImage from '../AdaptiveImage';
 import type { WPActivityItem } from './ActivitiesSection';
+import { url } from '../../lib/base';
 
 interface ProjectsSectionProps {
   wpProjects?: WPActivityItem[];
@@ -351,7 +352,7 @@ export default function ProjectsSection({ wpProjects = [] }: ProjectsSectionProp
               <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between shrink-0">
                 {selectedProject.slug ? (
                   <a
-                    href={`/blog/${selectedProject.slug}`}
+                    href={url(`/blog/${selectedProject.slug}`)}
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-primary hover:underline"
                   >
                     Ver artículo completo en el Blog

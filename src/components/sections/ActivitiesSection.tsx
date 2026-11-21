@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Calendar, Eye, X, ArrowRight, Search, RefreshCw } from 'lucide-react';
 import { LATEST_ACTIVITIES } from '../../data';
 import AdaptiveImage from '../AdaptiveImage';
+import { url } from '../../lib/base';
 
 export interface WPActivityItem {
   id: string | number;
@@ -357,7 +358,7 @@ export default function ActivitiesSection({ wpActivities = [] }: ActivitiesSecti
               <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between shrink-0">
                 {selectedActivity.slug ? (
                   <a
-                    href={`/blog/${selectedActivity.slug}`}
+                    href={url(`/blog/${selectedActivity.slug}`)}
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-primary hover:underline"
                   >
                     Ver artículo completo en el Blog

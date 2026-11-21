@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import { getPosts, getCategories, getFeaturedImageUrl, getPostCategories, hasValidCategory } from '../../lib/wordpress';
 import { Calendar, User, Newspaper, ArrowRight, Tag, BookOpen } from 'lucide-react';
+import { url } from '../../lib/base';
 
 const rawPosts = await getPosts(30);
 // REGLA: Entrada que no tenga categorías no mostrarla en ningún lado
@@ -88,7 +89,7 @@ const categories = rawCategories.filter(c => c.slug !== 'uncategorized' && c.nam
                   </div>
 
                   <h2 class="font-display font-bold text-xl text-slate-900 group-hover:text-brand-primary transition-colors leading-snug">
-                    <a href={`/blog/${post.slug}`}>
+                    <a href={url(`/blog/${post.slug}`)}>
                       <span set:html={post.title.rendered} />
                     </a>
                   </h2>
@@ -101,7 +102,7 @@ const categories = rawCategories.filter(c => c.slug !== 'uncategorized' && c.nam
 
                 <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
                   <a
-                    href={`/blog/${post.slug}`}
+                    href={url(`/blog/${post.slug}`)}
                     class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-primary hover:text-sky-800 transition-colors"
                   >
                     Leer publicación

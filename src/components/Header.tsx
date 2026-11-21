@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, ChevronDown, Heart, Scale, FileWarning, GraduationCap } from 'lucide-react';
+import { url } from '../lib/base';
 
 interface HeaderProps {
   currentPath?: string;
@@ -26,29 +27,32 @@ export default function Header({ currentPath = '/', onDonateClick }: HeaderProps
   };
 
   const menuItems = [
-    { label: 'Inicio', path: '/', id: 'home' },
-    { label: 'Nosotros', path: '/nosotros', id: 'about' },
-    { label: 'Servicios', path: '/servicios', id: 'services' },
-    { label: 'Proyectos', path: '/proyectos', id: 'projects' },
+    { label: 'Inicio', path: url('/'), id: 'home' },
+    { label: 'Nosotros', path: url('/nosotros'), id: 'about' },
+    { label: 'Servicios', path: url('/servicios'), id: 'services' },
+    { label: 'Proyectos', path: url('/proyectos'), id: 'projects' },
   ];
 
   const programSubsections = [
-    { label: 'Prácticas y Pasantías', path: '/programas/practicas-pasantias', id: 'internships', icon: GraduationCap, color: 'text-blue-600' },
-    { label: 'Informes y Denuncias de DDHH', path: '/programas/informes-denuncias-ddhh', id: 'reports', icon: FileWarning, color: 'text-amber-600' },
-    { label: 'Asesoría Jurídica Comunitaria', path: '/programas/asesoria-juridica-comunitaria', id: 'legal', icon: Scale, color: 'text-emerald-600' },
+    { label: 'Prácticas y Pasantías', path: url('/programas/practicas-pasantias'), id: 'internships', icon: GraduationCap, color: 'text-blue-600' },
+    { label: 'Informes y Denuncias de DDHH', path: url('/programas/informes-denuncias-ddhh'), id: 'reports', icon: FileWarning, color: 'text-amber-600' },
+    { label: 'Asesoría Jurídica Comunitaria', path: url('/programas/asesoria-juridica-comunitaria'), id: 'legal', icon: Scale, color: 'text-emerald-600' },
   ];
 
   const activePath = typeof window !== 'undefined' ? window.location.pathname : currentPath;
 
   const isCurrentPath = (path: string) => {
-    if (path === '/') return activePath === '/' || activePath === '/inicio';
-    return activePath === path || activePath.startsWith(path);
+    const homePath = url('/');
+    if (path === homePath) {
+      return activePath === homePath || activePath === `${homePath}/` || activePath.endsWith('/inicio') || activePath === '/';
+    }
+    return activePath === path || (path !== homePath && activePath.startsWith(path));
   };
 
-  const isProgramsActive = activePath.startsWith('/programas') ||
-    activePath === '/practicas-pasantias' ||
-    activePath === '/informes-denuncias-ddhh' ||
-    activePath === '/asesoria-juridica-comunitaria';
+  const isProgramsActive = activePath.includes('/programas') ||
+    activePath.includes('/practicas-pasantias') ||
+    activePath.includes('/informes-denuncias-ddhh') ||
+    activePath.includes('/asesoria-juridica-comunitaria');
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-sky-100" id="main-header">
@@ -56,7 +60,7 @@ export default function Header({ currentPath = '/', onDonateClick }: HeaderProps
         <div className="flex justify-between items-center h-20">
           {/* Logo Brand */}
           <a 
-            href="/"
+            href={url('/')}
             id="brand-logo-container"
             className="cursor-pointer select-none group flex items-center"
           >
@@ -142,9 +146,9 @@ export default function Header({ currentPath = '/', onDonateClick }: HeaderProps
 
             <a
               id="nav-activities-btn"
-              href="/actividades"
+              href={url('/actividades')}
               className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
-                isCurrentPath('/actividades')
+                isCurrentPath(url('/actividades'))
                   ? 'bg-sky-50 text-brand-primary font-semibold'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
               }`}
@@ -154,9 +158,9 @@ export default function Header({ currentPath = '/', onDonateClick }: HeaderProps
 
             <a
               id="nav-contact-btn"
-              href="/contacto"
+              href={url('/contacto')}
               className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
-                isCurrentPath('/contacto')
+                isCurrentPath(url('/contacto'))
                   ? 'bg-sky-50 text-brand-primary font-semibold'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
               }`}
@@ -242,20 +246,20 @@ export default function Header({ currentPath = '/', onDonateClick }: HeaderProps
               <div className="border-t border-slate-100 pt-2 mt-2 space-y-1">
                 <a
                   id="mobile-nav-activities-btn"
-                  href="/actividades"
+                  href={url('/actividades')}
                   onClick={() => setIsOpen(false)}
                   className={`block w-full text-left px-4 py-3 rounded-xl text-base font-medium transition-colors ${
-                    isCurrentPath('/actividades') ? 'bg-sky-50 text-brand-primary font-bold' : 'hover:bg-slate-50'
+                    isCurrentPath(url('/actividades')) ? 'bg-sky-50 text-brand-primary font-bold' : 'hover:bg-slate-50'
                   }`}
                 >
                   Actividades
                 </a>
                 <a
                   id="mobile-nav-contact-btn"
-                  href="/contacto"
+                  href={url('/contacto')}
                   onClick={() => setIsOpen(false)}
                   className={`block w-full text-left px-4 py-3 rounded-xl text-base font-medium transition-colors ${
-                    isCurrentPath('/contacto') ? 'bg-sky-50 text-brand-primary font-bold' : 'hover:bg-slate-50'
+                    isCurrentPath(url('/contacto')) ? 'bg-sky-50 text-brand-primary font-bold' : 'hover:bg-slate-50'
                   }`}
                 >
                   Contacto

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   X, ShieldCheck, Lock, QrCode
 } from 'lucide-react';
+import { url } from '../lib/base';
 
 interface DonationModalProps {
   isOpen: boolean;
@@ -132,7 +133,7 @@ export default function DonationModal({ isOpen, onClose }: DonationModalProps) {
                   className="w-4 h-4 mt-0.5 sm:mt-0 rounded text-sky-600 focus:ring-sky-500 border-slate-300"
                 />
                 <span>
-                  Acepto la <a href="/contacto" target="_blank" className="text-sky-700 underline font-semibold">Política de Privacidad</a> y tratamiento de datos personales.
+                  Acepto la <a href={url('/contacto')} target="_blank" className="text-sky-700 underline font-semibold">Política de Privacidad</a> y tratamiento de datos personales.
                 </span>
               </label>
             </div>
