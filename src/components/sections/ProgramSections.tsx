@@ -21,6 +21,7 @@ interface ProgramSectionsProps {
   initialSubsection?: string;
   initialInternshipPosts?: WPActivityItem[];
   initialReportsPosts?: WPActivityItem[];
+  initialLegalPosts?: WPActivityItem[];
 }
 
 const SUBSECTION_MAP: Record<string, string> = {
@@ -67,7 +68,8 @@ const getWordExcerpt = (textOrHtml: string, maxWords: number = 50): string => {
 export default function ProgramSections({ 
   initialSubsection = 'internships', 
   initialInternshipPosts = [],
-  initialReportsPosts = []
+  initialReportsPosts = [],
+  initialLegalPosts = []
 }: ProgramSectionsProps) {
   const resolveTab = () => {
     return SUBSECTION_MAP[initialSubsection] || initialSubsection;
@@ -76,6 +78,7 @@ export default function ProgramSections({
   const [activeTab, setActiveTab] = useState<string>(resolveTab());
   const [internshipPosts, setInternshipPosts] = useState<WPActivityItem[]>(initialInternshipPosts);
   const [reportsPosts, setReportsPosts] = useState<WPActivityItem[]>(initialReportsPosts);
+  const [legalPosts, setLegalPosts] = useState<WPActivityItem[]>(initialLegalPosts);
 
   useEffect(() => {
     setActiveTab(SUBSECTION_MAP[initialSubsection] || initialSubsection);
@@ -131,6 +134,27 @@ export default function ProgramSections({
           });
         });
 
+        // 3. Filtrar Asesoría Jurídica Gratuita
+        const matchingLegal = rawPosts.filter((post: any) => {
+          if (post.slug === 'hello-world' || post.id === 1) return false;
+          const terms: any[] = post._embedded?.['wp:term']?.[0] || [];
+          const validTerms = terms.filter((t: any) => {
+            const name = (t.name || '').toLowerCase();
+            const slug = (t.slug || '').toLowerCase();
+            return name !== 'uncategorized' && name !== 'sin categoría' && slug !== 'uncategorized';
+          });
+          if (validTerms.length === 0) return false;
+          return validTerms.some((t: any) => {
+            const n = (t.name || '').toLowerCase();
+            const s = (t.slug || '').toLowerCase();
+            return n.includes('asesoria') || n.includes('asesoría') || 
+                   n.includes('juridica') || n.includes('jurídica') ||
+                   n.includes('legal') || n.includes('gratuita') ||
+                   s.includes('asesoria') || s.includes('juridica') ||
+                   s.includes('legal');
+          });
+        });
+
         const mapPost = (post: any, defaultCat: string) => {
           const terms: any[] = post._embedded?.['wp:term']?.[0] || [];
           const catNames = terms.map((t: any) => t.name).filter((c: string) => c.toLowerCase() !== 'uncategorized' && c.toLowerCase() !== 'sin categoría');
@@ -161,6 +185,9 @@ export default function ProgramSections({
           }
           if (matchingReports.length > 0) {
             setReportsPosts(matchingReports.map(p => mapPost(p, 'Informes y Denuncias de DDHH')));
+          }
+          if (matchingLegal.length > 0) {
+            setLegalPosts(matchingLegal.map(p => mapPost(p, 'Asesoría Jurídica Gratuita')));
           }
         }
       } catch (err) {
@@ -1053,8 +1080,62 @@ export default function ProgramSections({
               id="legal-panel"
               key="legal"
             >
-              {/* Introduction cards (Duplicated 35 times as requested, filtered to remove block 2) */}
-              {Array.from({ length: 35 })
+              {/* Dynamic WordPress cards for "Asesoría Jurídica Gratuita" */}
+              {legalPosts.length > 0 ? (
+                legalPosts.map((post) => (
+                  <div key={post.id} className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                      <div className="space-y-4">
+                        <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest block">
+                          {post.category || 'Asesoría Jurídica Gratuita'}
+                        </span>
+                        <a 
+                          href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
+                          className="block hover:text-emerald-800 transition-colors"
+                        >
+                          <h3 
+                            className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight hover:text-emerald-800 transition-colors"
+                            dangerouslySetInnerHTML={{ __html: post.title }}
+                          />
+                        </a>
+                        <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
+                          <p>
+                            {getWordExcerpt(post.content || post.description, 50)}
+                          </p>
+                        </div>
+
+                        {post.slug && (
+                          <div className="pt-2">
+                            <a
+                              href={url(`/blog/${post.slug}`)}
+                              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-sm hover:shadow transition-all duration-200 group/btn w-fit cursor-pointer"
+                              id={`btn-read-more-${post.id}`}
+                            >
+                              <span>Leer más</span>
+                              <ChevronRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {post.image && (
+                        <a 
+                          href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
+                          className="block group/img cursor-pointer"
+                        >
+                          <AdaptiveImage
+                            src={post.image}
+                            alt={post.title}
+                            containerClassName="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-white border border-slate-200/80 group-hover/img:opacity-95 transition-opacity"
+                          />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                /* Introduction cards (Duplicated 35 times as requested, filtered to remove block 2) */
+                Array.from({ length: 35 })
                 .map((_, i) => i)
                 .filter(i => i !== 1)
                 .map((originalIndex, displayIndex) => {
@@ -1192,7 +1273,7 @@ export default function ProgramSections({
                     </div>
                   </div>
                 );
-              })}
+              }))}
 
               {/* Informative Block instead of form */}
               <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">

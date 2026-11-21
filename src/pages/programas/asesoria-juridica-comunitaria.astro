@@ -1,11 +1,58 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ProgramSections from '../../components/sections/ProgramSections';
+import { getPosts, getFeaturedImageUrl, getPostCategories, hasValidCategory } from '../../lib/wordpress';
+import type { WPActivityItem } from '../../components/sections/ActivitiesSection';
+
+// Cargar posts de WordPress pertenecientes a Asesoría Jurídica Gratuita
+const rawPosts = await getPosts(50);
+const legalRawPosts = rawPosts.filter(post => {
+  if (post.slug === 'hello-world' || post.id === 1) return false;
+  if (!hasValidCategory(post)) return false;
+  const cats = getPostCategories(post);
+  return cats.some(c => {
+    const n = c.toLowerCase();
+    return (
+      n.includes('asesoria') ||
+      n.includes('asesoría') ||
+      n.includes('juridica') ||
+      n.includes('jurídica') ||
+      n.includes('legal') ||
+      n.includes('gratuita')
+    );
+  });
+});
+
+const initialLegalPosts: WPActivityItem[] = legalRawPosts.map(post => {
+  const cats = getPostCategories(post);
+  const featuredImg = getFeaturedImageUrl(post, 'https://lh3.googleusercontent.com/d/1VOAa3Fwpv9QvlaDHN7PP8mWY-jYImtzN');
+  const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+
+  return {
+    id: `wp-${post.id}`,
+    title: post.title.rendered,
+    category: cats[0] || 'Asesoría Jurídica Gratuita',
+    categories: cats,
+    description: post.excerpt.rendered.replace(/<[^>]*>?/gm, '').trim(),
+    content: post.content.rendered,
+    image: featuredImg,
+    slug: post.slug,
+    date: dateStr,
+  };
+});
 ---
 
 <Layout
   title="Asesoría Jurídica Comunitaria | Programas FUNDELIBERTAD"
   description="Solicitud en línea de orientación legal gratuita para personas y familias de escasos recursos."
 >
-  <ProgramSections client:load initialSubsection="legal" />
+  <ProgramSections 
+    client:load 
+    initialSubsection="legal" 
+    initialLegalPosts={initialLegalPosts} 
+  />
 </Layout>
