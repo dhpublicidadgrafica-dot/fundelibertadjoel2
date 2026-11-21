@@ -299,29 +299,29 @@ export default function ProgramSections({
               {/* Dynamic WordPress cards for "Prácticas y Pasantías" */}
               {internshipPosts.length > 0 ? (
                 internshipPosts.map((post) => (
-                  <div key={post.id} className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                      <div className="space-y-4">
-                        <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block">
+                  <div key={post.id} className="bg-white rounded-2xl border border-slate-100 shadow-xs p-5 sm:p-6 md:p-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 items-start">
+                      <div className={post.image ? "contents md:flex md:flex-col md:gap-y-3" : "contents md:flex md:flex-col md:gap-y-3 md:col-span-2"}>
+                        <span className="order-1 text-[10px] font-bold text-blue-600 uppercase tracking-widest block">
                           {post.category || 'Prácticas y Pasantías'}
                         </span>
                         <a 
                           href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
-                          className="block hover:text-blue-600 transition-colors"
+                          className="order-3 block hover:text-blue-600 transition-colors"
                         >
                           <h3 
                             className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight hover:text-blue-600 transition-colors"
                             dangerouslySetInnerHTML={{ __html: post.title }}
                           />
                         </a>
-                        <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
+                        <div className="order-4 text-xs text-slate-500 space-y-3 leading-relaxed">
                           <p>
                             {getWordExcerpt(post.content || post.description, 50)}
                           </p>
                         </div>
 
                         {post.slug && (
-                          <div className="pt-2">
+                          <div className="order-5 pt-1 md:pt-2">
                             <a
                               href={url(`/blog/${post.slug}`)}
                               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm hover:shadow transition-all duration-200 group/btn w-fit cursor-pointer"
@@ -337,7 +337,7 @@ export default function ProgramSections({
                       {post.image && (
                         <a 
                           href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
-                          className="block group/img cursor-pointer h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 relative"
+                          className="order-2 md:order-none block group/img cursor-pointer w-full h-56 sm:h-64 md:h-full min-h-[220px] md:min-h-[250px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 relative"
                         >
                           <img
                             src={post.image}
@@ -353,14 +353,14 @@ export default function ProgramSections({
               ) : (
                 <>
                   {/* Introduction card */}
-                  <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                      <div className="space-y-4">
-                        <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block">Prácticas Universitarias</span>
-                        <h3 className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
+                  <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-5 sm:p-6 md:p-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 items-start">
+                      <div className="contents md:flex md:flex-col md:gap-y-3">
+                        <span className="order-1 text-[10px] font-bold text-blue-600 uppercase tracking-widest block">Prácticas Universitarias</span>
+                        <h3 className="order-3 font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
                           Fortalece tu Vocación en el Territorio
                         </h3>
-                        <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
+                        <div className="order-4 text-xs text-slate-500 space-y-3 leading-relaxed">
                           <p>
                             La organización está en la busqueda de personas idóneas, para que aporten sus conocimiemtos e ideas, con el fin de apoyar a quienes se encuentran bajo el mandato de protección de FUNDELIBERTAD.
                           </p>
@@ -380,7 +380,7 @@ export default function ProgramSections({
                           </div>
                         </div>
                       </div>
-                      <div className="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80">
+                      <div className="order-2 md:order-none w-full h-56 sm:h-64 md:h-full min-h-[220px] md:min-h-[250px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 relative">
                         <img
                           src="https://lh3.googleusercontent.com/d/1VOAa3Fwpv9QvlaDHN7PP8mWY-jYImtzN"
                           alt="Prácticas universitarias FUNDELIBERTAD"
@@ -392,19 +392,19 @@ export default function ProgramSections({
                   </div>
 
                   {/* Highlight Intern card */}
-                  <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                      <div className="space-y-4">
-                        <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block">Prácticas y Pasantías</span>
-                        <h3 className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
+                  <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-5 sm:p-6 md:p-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 items-start">
+                      <div className="contents md:flex md:flex-col md:gap-y-3">
+                        <span className="order-1 text-[10px] font-bold text-blue-600 uppercase tracking-widest block">Prácticas y Pasantías</span>
+                        <h3 className="order-3 font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
                           Fabian Alejandro Areiza Valencia
                         </h3>
-                        <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
+                        <div className="order-4 text-xs text-slate-500 space-y-3 leading-relaxed">
                           <p>
                             {getWordExcerpt("Fabian Alejandro Areiza Valencia, estudiante del Servicio Nacional de Aprendizaje-SENA en el programa de Tecnología en Contabilidad y Finanzas, realiza las pasantias en FUNDELIBERTAD desde el día 5 de abril de 2021 hasta el 20 de agosto de 2021, para poder recibir su grado.", 50)}
                           </p>
                         </div>
-                        <div className="pt-2">
+                        <div className="order-5 pt-1 md:pt-2">
                           <a
                             href={url('/blog')}
                             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm hover:shadow transition-all duration-200 group/btn w-fit cursor-pointer"
@@ -414,7 +414,7 @@ export default function ProgramSections({
                           </a>
                         </div>
                       </div>
-                      <div className="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80">
+                      <div className="order-2 md:order-none w-full h-56 sm:h-64 md:h-full min-h-[220px] md:min-h-[250px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 relative">
                         <img
                           src="https://lh3.googleusercontent.com/d/1EvbiisDrvz4JgZf3o388N7PeKMP5dxKP"
                           alt="Pasantías en Contabilidad y Finanzas - SENA"
@@ -482,29 +482,29 @@ export default function ProgramSections({
               {/* Dynamic WordPress cards for "Informes y Denuncias de DDHH" */}
               {reportsPosts.length > 0 ? (
                 reportsPosts.map((post) => (
-                  <div key={post.id} className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                      <div className="space-y-4">
-                        <span className="text-[10px] font-bold text-amber-700 uppercase tracking-widest block">
+                  <div key={post.id} className="bg-white rounded-2xl border border-slate-100 shadow-xs p-5 sm:p-6 md:p-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 items-start">
+                      <div className={post.image ? "contents md:flex md:flex-col md:gap-y-3" : "contents md:flex md:flex-col md:gap-y-3 md:col-span-2"}>
+                        <span className="order-1 text-[10px] font-bold text-amber-700 uppercase tracking-widest block">
                           {post.category || 'Informes y Denuncias de DDHH'}
                         </span>
                         <a 
                           href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
-                          className="block hover:text-amber-800 transition-colors"
+                          className="order-3 block hover:text-amber-800 transition-colors"
                         >
                           <h3 
                             className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight hover:text-amber-800 transition-colors"
                             dangerouslySetInnerHTML={{ __html: post.title }}
                           />
                         </a>
-                        <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
+                        <div className="order-4 text-xs text-slate-500 space-y-3 leading-relaxed">
                           <p>
                             {getWordExcerpt(post.content || post.description, 50)}
                           </p>
                         </div>
 
                         {post.slug && (
-                          <div className="pt-2">
+                          <div className="order-5 pt-1 md:pt-2">
                             <a
                               href={url(`/blog/${post.slug}`)}
                               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-sm hover:shadow transition-all duration-200 group/btn w-fit cursor-pointer"
@@ -520,7 +520,7 @@ export default function ProgramSections({
                       {post.image && (
                         <a 
                           href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
-                          className="block group/img cursor-pointer h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 relative"
+                          className="order-2 md:order-none block group/img cursor-pointer w-full h-56 sm:h-64 md:h-full min-h-[220px] md:min-h-[250px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 relative"
                         >
                           <img
                             src={post.image}
@@ -562,13 +562,13 @@ export default function ProgramSections({
                 const isCaso25 = index === 24;
                 const isCaso26 = index === 25;
                 return (
-                  <div key={index} className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6" id={`denuncia-card-${index}`}>
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-                      <div className="lg:col-span-2 space-y-4">
-                        <div className="flex items-center gap-2">
+                  <div key={index} className="bg-white rounded-2xl border border-slate-100 shadow-xs p-5 sm:p-6 md:p-8" id={`denuncia-card-${index}`}>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6 items-start">
+                      <div className="contents lg:flex lg:flex-col lg:col-span-2 lg:gap-y-3">
+                        <div className="order-1 flex items-center gap-2">
                           <span className="text-[10px] font-bold text-amber-700 uppercase tracking-widest block">Canal de Derechos Humanos</span>
                         </div>
-                        <h3 className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
+                        <h3 className="order-3 font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
                           {isCaso2 
                             ? 'VIOLACIÓN A LA SEGURIDAD SOCIAL, SALUD Y LA VIDA' 
                             : isCaso3 
@@ -622,7 +622,7 @@ export default function ProgramSections({
                             : 'Denuncias'}
                         </h3>
                         
-                        <div className="text-xs text-slate-500 space-y-3.5 leading-relaxed">
+                        <div className="order-4 text-xs text-slate-500 space-y-3.5 leading-relaxed">
                           {isCaso2 ? (
                             <>
                               <p className="font-semibold text-slate-700">
@@ -1021,7 +1021,7 @@ export default function ProgramSections({
                             ? "Indigencia en el Parque de Cristo Rey - Guayabal"
                             : 'Denuncias DDHH FUNDELIBERTAD'
                         }
-                        containerClassName="lg:col-span-1 h-64 lg:h-80 rounded-xl overflow-hidden bg-white border border-slate-200/80"
+                        containerClassName="order-2 lg:order-none lg:col-span-1 w-full h-56 sm:h-64 lg:h-80 rounded-xl overflow-hidden bg-white border border-slate-200/80"
                       />
                     </div>
                   </div>
@@ -1089,29 +1089,29 @@ export default function ProgramSections({
               {/* Dynamic WordPress cards for "Asesoría Jurídica Gratuita" */}
               {legalPosts.length > 0 ? (
                 legalPosts.map((post) => (
-                  <div key={post.id} className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                      <div className="space-y-4">
-                        <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest block">
+                  <div key={post.id} className="bg-white rounded-2xl border border-slate-100 shadow-xs p-5 sm:p-6 md:p-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 items-start">
+                      <div className={post.image ? "contents md:flex md:flex-col md:gap-y-3" : "contents md:flex md:flex-col md:gap-y-3 md:col-span-2"}>
+                        <span className="order-1 text-[10px] font-bold text-emerald-700 uppercase tracking-widest block">
                           {post.category || 'Asesoría Jurídica Gratuita'}
                         </span>
                         <a 
                           href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
-                          className="block hover:text-emerald-800 transition-colors"
+                          className="order-3 block hover:text-emerald-800 transition-colors"
                         >
                           <h3 
                             className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight hover:text-emerald-800 transition-colors"
                             dangerouslySetInnerHTML={{ __html: post.title }}
                           />
                         </a>
-                        <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
+                        <div className="order-4 text-xs text-slate-500 space-y-3 leading-relaxed">
                           <p>
                             {getWordExcerpt(post.content || post.description, 50)}
                           </p>
                         </div>
 
                         {post.slug && (
-                          <div className="pt-2">
+                          <div className="order-5 pt-1 md:pt-2">
                             <a
                               href={url(`/blog/${post.slug}`)}
                               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-sm hover:shadow transition-all duration-200 group/btn w-fit cursor-pointer"
@@ -1127,7 +1127,7 @@ export default function ProgramSections({
                       {post.image && (
                         <a 
                           href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
-                          className="block group/img cursor-pointer h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 relative"
+                          className="order-2 md:order-none block group/img cursor-pointer w-full h-56 sm:h-64 md:h-full min-h-[220px] md:min-h-[250px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 relative"
                         >
                           <img
                             src={post.image}
@@ -1258,16 +1258,16 @@ export default function ProgramSections({
                 }
 
                 return (
-                  <div key={originalIndex} className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-                      <div className="lg:col-span-2 space-y-3">
-                        <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest block">
+                  <div key={originalIndex} className="bg-white rounded-2xl border border-slate-100 shadow-xs p-5 sm:p-6 md:p-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6 items-start">
+                      <div className="contents lg:flex lg:flex-col lg:col-span-2 lg:gap-y-3">
+                        <span className="order-1 text-[10px] font-bold text-emerald-700 uppercase tracking-widest block">
                           Asesoría Jurídica Gratuita
                         </span>
-                        <h3 className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
+                        <h3 className="order-3 font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
                           {title}
                         </h3>
-                        <p className="text-xs text-slate-500 leading-relaxed">
+                        <p className="order-4 text-xs text-slate-500 leading-relaxed">
                           {description}
                         </p>
                       </div>
@@ -1275,7 +1275,7 @@ export default function ProgramSections({
                       <AdaptiveImage
                         src={index === 2 ? "https://lh3.googleusercontent.com/d/1I-HrHiEfoKEZCSVZ4LWLYKRDHwlgXpWq" : index === 3 ? "https://lh3.googleusercontent.com/d/1Qdjmjr0XHZ5zPjjRCMPNhG8ckkyOfv3p" : index === 4 ? "https://lh3.googleusercontent.com/d/1chXF5yQIojGBCj8bL0L415VhAehgpmJv" : index === 5 ? "https://lh3.googleusercontent.com/d/1rweq5ANbhu5336VGZdfTsNR_Xlr0Egsz" : index === 6 ? "https://lh3.googleusercontent.com/d/1UuP1gcCr05VTQh9jE-Bj1CI3p7dF3TPs" : index === 7 ? "https://lh3.googleusercontent.com/d/1e60TTT-7lR0UdX9BS66Bax1ScKrQdcB0" : index === 8 ? "https://lh3.googleusercontent.com/d/12_zHhY0dc4_6woepQESb9xX5NK-4LwCO" : index === 9 ? "https://lh3.googleusercontent.com/d/1cS9GTFuI_qAjGgVQrH4vTkPrMVNriKH5" : index === 10 ? "https://lh3.googleusercontent.com/d/1IePS57YfgCt1yfaLi_taodp6Cm6zUiNF" : index === 11 ? "https://lh3.googleusercontent.com/d/1GNzz6_5WiN_w4pkpgKjn228UkuaILQ28" : index === 12 ? "https://lh3.googleusercontent.com/d/10Lhq2VcwB9wbx1m5V4TGNk0WD1zvEfWF" : index === 13 ? "https://lh3.googleusercontent.com/d/1ka__kkNNsQgGVCsRTViBvGfyBo6k-SN7" : index === 14 ? "https://lh3.googleusercontent.com/d/1TnbhG6ZoDn50Dy-urPOX6d4jcvBz7hQ-" : index === 15 ? "https://lh3.googleusercontent.com/d/1HR6oaevZT0_uPscXEqM8iKmn_uFzryIR" : index === 16 ? "https://lh3.googleusercontent.com/d/1HNeuF7dGnU31KaaEREdPUWJpZ3xGsmnp" : index === 17 ? "https://lh3.googleusercontent.com/d/1ypoioOQVhdtxvGfOWJF4VRJTV8PCHj6J" : index === 18 ? "https://lh3.googleusercontent.com/d/1CjhsUtXTYvzjkHCKIYdNXENFf346gPym" : index === 19 ? "https://lh3.googleusercontent.com/d/1kmHMnsqBcbaa9SkaZ1R_DtDVEXkgtRHg" : index === 20 ? "https://lh3.googleusercontent.com/d/18LuJcJsX3MBhHHgbjUP5DB1WDJJwmX34" : index === 21 ? "https://lh3.googleusercontent.com/d/1rweq5ANbhu5336VGZdfTsNR_Xlr0Egsz" : index === 22 ? "https://lh3.googleusercontent.com/d/1Sy2F_LkuhLzZxPw_Xuzdu0zUqM6-V46B" : index === 23 ? "https://lh3.googleusercontent.com/d/1DRT_-Kxyy8NUSZP0e0C2glri0CNC514n" : index === 24 ? "https://lh3.googleusercontent.com/d/1B1SwMeOAedBjqD3U7kcjl1pIpAqfjw0L" : index === 25 ? "https://lh3.googleusercontent.com/d/1XDe60bQmlffpr44LVfqALziIpEnqYbqd" : index === 26 ? "https://lh3.googleusercontent.com/d/1HR6oaevZT0_uPscXEqM8iKmn_uFzryIR" : index === 27 ? "https://lh3.googleusercontent.com/d/1we7MTYMCeG7gfjqvkcsVd_Dzb8fUHQNA" : index === 28 ? "https://lh3.googleusercontent.com/d/1Si1dej5PqaNkqYJHo1zsKyF-k3Eg80p2" : index === 29 ? "https://lh3.googleusercontent.com/d/1hMdndrr8Ac3_CYZT47XzAGE4Cb5ldZHa" : index === 30 ? "https://lh3.googleusercontent.com/d/1BNuwxDQ024uX_sOw1YID6DVX05MhPsXu" : index === 31 ? "https://lh3.googleusercontent.com/d/1p1fIBACH78v6WdfariP7v2ccP1r1Tu_5" : index === 32 ? "https://lh3.googleusercontent.com/d/184e5GVNDfBjVyymJKOQUbLUDdvsQABQ0" : index === 33 ? "https://lh3.googleusercontent.com/d/1TuJyliS-G99TYaulPRTT0D0-DdBmvRmp" : index === 34 ? "https://lh3.googleusercontent.com/d/16f_m6vBT_ctYTBEA7kBvsfQwx8baqeHr" : legalImg}
                         alt="Consultorio jurídico FUNDELIBERTAD"
-                        containerClassName="lg:col-span-1 h-64 lg:h-80 rounded-xl overflow-hidden bg-white border border-slate-200/80"
+                        containerClassName="order-2 lg:order-none lg:col-span-1 w-full h-56 sm:h-64 lg:h-80 rounded-xl overflow-hidden bg-white border border-slate-200/80"
                       />
                     </div>
                   </div>
