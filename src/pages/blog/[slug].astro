@@ -22,6 +22,7 @@ if (!post) {
 
 const featuredImg = getFeaturedImageUrl(post, 'https://lh3.googleusercontent.com/d/1mzMGHUgDdHcX8hpf8DTMLIs2Dv53CCsd');
 const categories = getPostCategories(post);
+const isProject = categories.some((c: string) => c.toLowerCase().includes('proyecto'));
 const authorName = getAuthorName(post);
 const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
   year: 'numeric',
@@ -36,17 +37,6 @@ const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
   image={featuredImg}
 >
   <article class="py-12">
-    {/* Breadcrumbs / Back button */}
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-      <a
-        href={url('/blog')}
-        class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-brand-primary transition-colors bg-white px-3.5 py-2 rounded-xl shadow-2xs border border-slate-200 cursor-pointer"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Volver a todas las entradas
-      </a>
-    </div>
-
     {/* Header Article */}
     <header class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 text-center">
       {categories.length > 0 && (
@@ -95,6 +85,18 @@ const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
         class="wp-content bg-white p-6 sm:p-12 rounded-3xl shadow-xs border border-slate-100 text-slate-700 leading-relaxed text-base space-y-6"
         set:html={post.content.rendered}
       />
+
+      {/* Botón Volver al final del contenido */}
+      <div class="pt-8 pb-2 flex justify-start">
+        <a
+          href={isProject ? url('/proyectos') : url('/actividades')}
+          onclick="if(window.history.length > 1){ window.history.back(); return false; }"
+          class="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-brand-primary transition-colors bg-white hover:bg-slate-50 px-5 py-2.5 rounded-xl shadow-xs border border-slate-200 cursor-pointer"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Volver a todas las entradas
+        </a>
+      </div>
 
       {/* Institutional Call To Action */}
       <div class="mt-12 bg-gradient-to-r from-sky-50 to-emerald-50 rounded-3xl p-8 border border-sky-100 flex flex-col sm:flex-row items-center justify-between gap-6">
