@@ -267,15 +267,17 @@ export default function HomeSection({ onNavigate, onDonateClick, initialProjects
             className="bg-white rounded-3xl border border-slate-100 shadow-xs overflow-hidden text-left flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer group"
           >
             <div>
-              <AdaptiveImage
-                src={pasantiasImageSrc}
-                alt="Pasantías y Prácticas"
-                containerClassName="h-48 sm:h-56 relative overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center"
-              >
+              <div className="h-48 sm:h-56 relative overflow-hidden bg-slate-100 border-b border-slate-100">
+                <img
+                  src={typeof pasantiasImageSrc === 'string' ? pasantiasImageSrc : (pasantiasImageSrc as any)?.src || pasantiasImageSrc}
+                  alt="Pasantías y Prácticas"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
                 <span className="absolute top-3 left-3 bg-brand-green text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider z-20 shadow-xs">
                   Educación y Liderazgo
                 </span>
-              </AdaptiveImage>
+              </div>
               <div className="p-6 space-y-2">
                 <h3 className="font-display font-bold text-lg text-slate-950 leading-tight group-hover:text-sky-700 transition-colors">
                   Pasantías y Prácticas
