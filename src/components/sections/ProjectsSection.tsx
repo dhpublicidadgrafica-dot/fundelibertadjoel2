@@ -5,11 +5,31 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Calendar, Eye, X, ArrowRight, Search } from 'lucide-react';
+import { Calendar, Eye, X, ArrowRight, Search, ChevronRight } from 'lucide-react';
 import { PROJECTS_LIST } from '../../data';
 import AdaptiveImage from '../AdaptiveImage';
 import type { WPActivityItem } from './ActivitiesSection';
 import { url } from '../../lib/base';
+
+const getWordExcerpt = (textOrHtml: string, maxWords: number = 50): string => {
+  if (!textOrHtml) return '';
+  const plain = textOrHtml
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  const words = plain.split(/\s+/).filter(Boolean);
+  if (words.length <= maxWords) return plain;
+  return words.slice(0, maxWords).join(' ') + '...';
+};
 
 interface ProjectsSectionProps {
   wpProjects?: WPActivityItem[];
@@ -255,8 +275,7 @@ export default function ProjectsSection({ wpProjects = [] }: ProjectsSectionProp
               <div
                 id={`project-card-${proj.id}`}
                 key={proj.id}
-                onClick={() => setSelectedProject(proj)}
-                className="bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden text-left flex flex-col justify-between cursor-pointer hover:shadow-md transition-all duration-300 group"
+                className="bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden text-left flex flex-col justify-between hover:shadow-md transition-all duration-300 group"
               >
                 <div>
                   <div className="h-52 bg-slate-100 border-b border-slate-100 overflow-hidden relative flex items-center justify-center">
@@ -270,20 +289,34 @@ export default function ProjectsSection({ wpProjects = [] }: ProjectsSectionProp
                       {proj.category}
                     </span>
                   </div>
-                  <div className="p-5 space-y-2">
-                    <h3 className="font-display font-bold text-sm text-slate-900 leading-snug group-hover:text-sky-800 transition-colors">
+                  <div className="p-5 space-y-3">
+                    <h3 className="font-display font-bold text-base text-slate-900 leading-snug group-hover:text-sky-800 transition-colors">
                       {proj.title}
                     </h3>
-                    <div
-                      className="text-xs text-slate-500 leading-relaxed line-clamp-3"
-                      dangerouslySetInnerHTML={{ __html: proj.description }}
-                    />
+                    <p className="text-xs text-slate-500 leading-relaxed">
+                      {getWordExcerpt(proj.content || proj.description, 50)}
+                    </p>
                     {proj.date && (
                       <p className="text-[10px] text-slate-400 font-mono pt-1">
                         {proj.date}
                       </p>
                     )}
                   </div>
+                </div>
+                <div className="p-5 pt-0">
+                  <a
+                    href={proj.slug ? url(`/blog/${proj.slug}`) : '#'}
+                    onClick={(e) => {
+                      if (!proj.slug) {
+                        e.preventDefault();
+                        setSelectedProject(proj);
+                      }
+                    }}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs shadow-sm hover:shadow transition-all duration-200 group/btn w-fit cursor-pointer"
+                  >
+                    <span>Leer más</span>
+                    <ChevronRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                  </a>
                 </div>
               </div>
             ))}
@@ -312,11 +345,13 @@ export default function ProjectsSection({ wpProjects = [] }: ProjectsSectionProp
               id="project-modal-content"
             >
               {/* Cover Image */}
-              <AdaptiveImage
-                src={selectedProject.image}
-                alt={selectedProject.title}
-                containerClassName="h-64 sm:h-72 relative bg-white border-b border-slate-100 shrink-0 flex items-center justify-center overflow-hidden"
-              >
+              <div className="h-64 sm:h-72 relative bg-slate-100 border-b border-slate-100 shrink-0 flex items-center justify-center overflow-hidden">
+                <img
+                  src={selectedProject.image}
+                  alt={selectedProject.title}
+                  className="w-full h-full object-cover"
+                  loading="eager"
+                />
                 <button
                   id="close-project-btn"
                   onClick={() => setSelectedProject(null)}
@@ -329,7 +364,7 @@ export default function ProjectsSection({ wpProjects = [] }: ProjectsSectionProp
                     {selectedProject.category}
                   </span>
                 </div>
-              </AdaptiveImage>
+              </div>
 
               {/* Scrollable Content */}
               <div className="overflow-y-auto p-6 md:p-8 space-y-6">

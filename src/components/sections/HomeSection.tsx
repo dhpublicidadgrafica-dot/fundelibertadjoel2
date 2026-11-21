@@ -17,6 +17,26 @@ import AdaptiveImage from '../AdaptiveImage';
 import type { WPActivityItem } from './ActivitiesSection';
 import { url } from '../../lib/base';
 
+const getWordExcerpt = (textOrHtml: string, maxWords: number = 50): string => {
+  if (!textOrHtml) return '';
+  const plain = textOrHtml
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  const words = plain.split(/\s+/).filter(Boolean);
+  if (words.length <= maxWords) return plain;
+  return words.slice(0, maxWords).join(' ') + '...';
+};
+
 interface HomeSectionProps {
   onNavigate?: (page: string, subSection?: string) => void;
   onDonateClick?: () => void;
@@ -464,8 +484,8 @@ export default function HomeSection({ onNavigate, onDonateClick, initialProjects
                       className="font-display font-bold text-sm sm:text-base text-slate-900 leading-snug group-hover:text-sky-700 transition-colors line-clamp-2"
                       dangerouslySetInnerHTML={{ __html: proj.title }}
                     />
-                    <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
-                      {proj.description}
+                    <p className="text-xs text-slate-500 leading-relaxed">
+                      {getWordExcerpt(proj.content || proj.description, 50)}
                     </p>
                   </div>
                 </div>
@@ -473,10 +493,10 @@ export default function HomeSection({ onNavigate, onDonateClick, initialProjects
                   <a
                     href={proj.slug ? url(`/blog/${proj.slug}`) : url('/proyectos')}
                     onClick={(e) => e.stopPropagation()}
-                    className="w-full px-3 py-2 bg-slate-50 hover:bg-sky-50 hover:text-sky-700 text-slate-700 text-xs font-bold rounded-xl transition-colors inline-flex items-center justify-center gap-1.5 cursor-pointer border border-slate-100"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs shadow-sm hover:shadow transition-all duration-200 group/btn w-fit cursor-pointer"
                   >
-                    Saber más
-                    <ChevronRightIcon />
+                    <span>Leer más</span>
+                    <ChevronRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
                   </a>
                 </div>
               </div>

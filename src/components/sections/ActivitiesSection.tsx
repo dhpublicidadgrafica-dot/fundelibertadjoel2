@@ -5,10 +5,30 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Calendar, Eye, X, ArrowRight, Search, RefreshCw } from 'lucide-react';
+import { Calendar, Eye, X, ArrowRight, Search, RefreshCw, ChevronRight } from 'lucide-react';
 import { LATEST_ACTIVITIES } from '../../data';
 import AdaptiveImage from '../AdaptiveImage';
 import { url } from '../../lib/base';
+
+const getWordExcerpt = (textOrHtml: string, maxWords: number = 50): string => {
+  if (!textOrHtml) return '';
+  const plain = textOrHtml
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  const words = plain.split(/\s+/).filter(Boolean);
+  if (words.length <= maxWords) return plain;
+  return words.slice(0, maxWords).join(' ') + '...';
+};
 
 export interface WPActivityItem {
   id: string | number;
@@ -261,8 +281,7 @@ export default function ActivitiesSection({ wpActivities = [] }: ActivitiesSecti
               <div
                 id={`activity-full-${act.id}`}
                 key={act.id}
-                onClick={() => setSelectedActivity(act)}
-                className="bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden text-left flex flex-col justify-between cursor-pointer hover:shadow-md transition-all duration-300 group"
+                className="bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden text-left flex flex-col justify-between hover:shadow-md transition-all duration-300 group"
               >
                 <div>
                   <div className="h-52 bg-slate-100 border-b border-slate-100 overflow-hidden relative flex items-center justify-center">
@@ -276,20 +295,34 @@ export default function ActivitiesSection({ wpActivities = [] }: ActivitiesSecti
                       {act.category}
                     </span>
                   </div>
-                  <div className="p-5 space-y-2">
-                    <h3 className="font-display font-bold text-sm text-slate-900 leading-snug group-hover:text-sky-800 transition-colors">
+                  <div className="p-5 space-y-3">
+                    <h3 className="font-display font-bold text-base text-slate-900 leading-snug group-hover:text-sky-800 transition-colors">
                       {act.title}
                     </h3>
-                    <div
-                      className="text-xs text-slate-500 leading-relaxed line-clamp-3"
-                      dangerouslySetInnerHTML={{ __html: act.description }}
-                    />
+                    <p className="text-xs text-slate-500 leading-relaxed">
+                      {getWordExcerpt(act.content || act.description, 50)}
+                    </p>
                     {act.date && (
                       <p className="text-[10px] text-slate-400 font-mono pt-1">
                         {act.date}
                       </p>
                     )}
                   </div>
+                </div>
+                <div className="p-5 pt-0">
+                  <a
+                    href={act.slug ? url(`/blog/${act.slug}`) : '#'}
+                    onClick={(e) => {
+                      if (!act.slug) {
+                        e.preventDefault();
+                        setSelectedActivity(act);
+                      }
+                    }}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs shadow-sm hover:shadow transition-all duration-200 group/btn w-fit cursor-pointer"
+                  >
+                    <span>Leer más</span>
+                    <ChevronRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                  </a>
                 </div>
               </div>
             ))}
@@ -318,11 +351,13 @@ export default function ActivitiesSection({ wpActivities = [] }: ActivitiesSecti
               id="activity-modal-content"
             >
               {/* Cover Image */}
-              <AdaptiveImage
-                src={selectedActivity.image}
-                alt={selectedActivity.title}
-                containerClassName="h-64 sm:h-72 relative bg-white border-b border-slate-100 shrink-0 flex items-center justify-center overflow-hidden"
-              >
+              <div className="h-64 sm:h-72 relative bg-slate-100 border-b border-slate-100 shrink-0 flex items-center justify-center overflow-hidden">
+                <img
+                  src={selectedActivity.image}
+                  alt={selectedActivity.title}
+                  className="w-full h-full object-cover"
+                  loading="eager"
+                />
                 <button
                   id="close-activity-btn"
                   onClick={() => setSelectedActivity(null)}
@@ -335,7 +370,7 @@ export default function ActivitiesSection({ wpActivities = [] }: ActivitiesSecti
                     {selectedActivity.category}
                   </span>
                 </div>
-              </AdaptiveImage>
+              </div>
 
               {/* Scrollable Content */}
               <div className="overflow-y-auto p-6 md:p-8 space-y-6">

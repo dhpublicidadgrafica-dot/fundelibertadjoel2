@@ -337,12 +337,13 @@ export default function ProgramSections({
                       {post.image && (
                         <a 
                           href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
-                          className="block group/img cursor-pointer"
+                          className="block group/img cursor-pointer h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 relative"
                         >
-                          <AdaptiveImage
+                          <img
                             src={post.image}
                             alt={post.title}
-                            containerClassName="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-white border border-slate-200/80 group-hover/img:opacity-95 transition-opacity"
+                            className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                            loading="lazy"
                           />
                         </a>
                       )}
@@ -380,11 +381,14 @@ export default function ProgramSections({
                         </div>
                       </div>
                       
-                      <AdaptiveImage
-                        src="https://lh3.googleusercontent.com/d/1VOAa3Fwpv9QvlaDHN7PP8mWY-jYImtzN"
-                        alt="Prácticas universitarias FUNDELIBERTAD"
-                        containerClassName="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-white border border-slate-200/80"
-                      />
+                      <div className="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 relative">
+                        <img
+                          src="https://lh3.googleusercontent.com/d/1VOAa3Fwpv9QvlaDHN7PP8mWY-jYImtzN"
+                          alt="Prácticas universitarias FUNDELIBERTAD"
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -412,11 +416,14 @@ export default function ProgramSections({
                         </div>
                       </div>
                       
-                      <AdaptiveImage
-                        src="https://lh3.googleusercontent.com/d/1EvbiisDrvz4JgZf3o388N7PeKMP5dxKP"
-                        alt="Pasantías en Contabilidad y Finanzas - SENA"
-                        containerClassName="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-white border border-slate-200/80"
-                      />
+                      <div className="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 relative">
+                        <img
+                          src="https://lh3.googleusercontent.com/d/1EvbiisDrvz4JgZf3o388N7PeKMP5dxKP"
+                          alt="Pasantías en Contabilidad y Finanzas - SENA"
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      </div>
                     </div>
                   </div>
                 </>
@@ -515,12 +522,13 @@ export default function ProgramSections({
                       {post.image && (
                         <a 
                           href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
-                          className="block group/img cursor-pointer"
+                          className="block group/img cursor-pointer h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 relative"
                         >
-                          <AdaptiveImage
+                          <img
                             src={post.image}
                             alt={post.title}
-                            containerClassName="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-white border border-slate-200/80 group-hover/img:opacity-95 transition-opacity"
+                            className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                            loading="lazy"
                           />
                         </a>
                       )}
@@ -1121,12 +1129,13 @@ export default function ProgramSections({
                       {post.image && (
                         <a 
                           href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
-                          className="block group/img cursor-pointer"
+                          className="block group/img cursor-pointer h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 relative"
                         >
-                          <AdaptiveImage
+                          <img
                             src={post.image}
                             alt={post.title}
-                            containerClassName="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-white border border-slate-200/80 group-hover/img:opacity-95 transition-opacity"
+                            className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                            loading="lazy"
                           />
                         </a>
                       )}
