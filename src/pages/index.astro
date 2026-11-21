@@ -13,13 +13,13 @@ const validPosts = rawPosts.filter(hasValidCategory);
 // Últimas 3 entradas para la sección del blog
 const posts = validPosts.slice(0, 3);
 
-// REGLA: En "Nuestros Proyectos de Impacto", mostrar siempre los 8 últimos proyectos publicados en WordPress (sin añadir mock)
+// REGLA: En "Nuestros Proyectos de Impacto", mostrar siempre los 3 últimos proyectos publicados en WordPress (sin añadir mock)
 const wpProjectPosts = validPosts
   .filter((post) => {
     const cats = getPostCategories(post);
     return cats.some((c) => c.toLowerCase().includes('proyecto'));
   })
-  .slice(0, 8);
+  .slice(0, 3);
 
 const homeProjects: WPActivityItem[] = wpProjectPosts.map((post) => {
   const cats = getPostCategories(post);

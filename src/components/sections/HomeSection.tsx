@@ -52,7 +52,7 @@ export default function HomeSection({ onNavigate, onDonateClick, initialProjects
             t.slug.toLowerCase().includes('proyecto') || 
             t.name.toLowerCase().includes('proyecto')
           );
-        }).slice(0, 8); // REGLA: Siempre los 8 últimos proyectos colocados, sin rellenar con mocks
+        }).slice(0, 3); // REGLA: Siempre los 3 últimos proyectos colocados, sin rellenar con mocks
 
         const mapped: WPActivityItem[] = projectPosts.map((post: any) => {
           const terms: any[] = post._embedded?.['wp:term']?.[0] || [];
@@ -431,7 +431,7 @@ export default function HomeSection({ onNavigate, onDonateClick, initialProjects
             <p className="text-sm text-slate-500 font-medium">No hay proyectos publicados actualmente en WordPress.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {projects.map((proj) => (
               <div
                 id={`project-card-${proj.id}`}
