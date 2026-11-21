@@ -43,7 +43,7 @@ const TAB_URL_MAP: Record<string, string> = {
   'legal': '/programas/asesoria-juridica-comunitaria',
 };
 
-const getWordExcerpt = (textOrHtml: string, maxWords: number = 300): string => {
+const getWordExcerpt = (textOrHtml: string, maxWords: number = 50): string => {
   if (!textOrHtml) return '';
   const plain = textOrHtml
     .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
@@ -257,7 +257,7 @@ export default function ProgramSections({ initialSubsection = 'internships', ini
                         </a>
                         <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
                           <p>
-                            {getWordExcerpt(post.content || post.description, 300)}
+                            {getWordExcerpt(post.content || post.description, 50)}
                           </p>
                         </div>
 
@@ -339,7 +339,7 @@ export default function ProgramSections({ initialSubsection = 'internships', ini
                         </h3>
                         <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
                           <p>
-                            {getWordExcerpt("Fabian Alejandro Areiza Valencia, estudiante del Servicio Nacional de Aprendizaje-SENA en el programa de Tecnología en Contabilidad y Finanzas, realiza las pasantias en FUNDELIBERTAD desde el día 5 de abril de 2021 hasta el 20 de agosto de 2021, para poder recibir su grado.", 300)}
+                            {getWordExcerpt("Fabian Alejandro Areiza Valencia, estudiante del Servicio Nacional de Aprendizaje-SENA en el programa de Tecnología en Contabilidad y Finanzas, realiza las pasantias en FUNDELIBERTAD desde el día 5 de abril de 2021 hasta el 20 de agosto de 2021, para poder recibir su grado.", 50)}
                           </p>
                         </div>
                         <div className="pt-2">
