@@ -1,0 +1,11 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ProgramSections from '../../components/sections/ProgramSections';
+---
+
+<Layout
+  title="Prácticas y Pasantías | Programas FUNDELIBERTAD"
+  description="Convocatoria para estudiantes de derecho, trabajo social y carreras afines para realizar sus prácticas en FUNDELIBERTAD."
+>
+  <ProgramSections client:load initialSubsection="internships" />
+</Layout>

@@ -1,0 +1,998 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { 
+  GraduationCap, AlertTriangle, Scale, 
+  Phone, Mail, Info, Lock, ChevronRight 
+} from 'lucide-react';
+
+import internshipImg from '../../assets/images/fundelibertad_internship_1782489676477.jpg';
+import reportsImg from '../../assets/images/fundelibertad_reports_1782489690540.jpg';
+import legalImg from '../../assets/images/fundelibertad_legal_1782489703836.jpg';
+import AdaptiveImage from '../AdaptiveImage';
+
+interface ProgramSectionsProps {
+  initialSubsection?: string;
+}
+
+const SUBSECTION_MAP: Record<string, string> = {
+  'internships': 'internships',
+  'practicas-pasantias': 'internships',
+  'practicas': 'internships',
+  'pasantias': 'internships',
+  'reports': 'reports',
+  'informes-denuncias-ddhh': 'reports',
+  'informes-denuncias': 'reports',
+  'denuncias': 'reports',
+  'legal': 'legal',
+  'asesoria-juridica-comunitaria': 'legal',
+  'asesoria-juridica': 'legal',
+  'asesoria-legal': 'legal'
+};
+
+const TAB_URL_MAP: Record<string, string> = {
+  'internships': '/programas/practicas-pasantias',
+  'reports': '/programas/informes-denuncias-ddhh',
+  'legal': '/programas/asesoria-juridica-comunitaria',
+};
+
+export default function ProgramSections({ initialSubsection = 'internships' }: ProgramSectionsProps) {
+  const resolveTab = () => {
+    return SUBSECTION_MAP[initialSubsection] || initialSubsection;
+  };
+
+  const [activeTab, setActiveTab] = useState<string>(resolveTab());
+
+  useEffect(() => {
+    setActiveTab(SUBSECTION_MAP[initialSubsection] || initialSubsection);
+  }, [initialSubsection]);
+
+  const handleTabClick = (tab: string) => {
+    setActiveTab(tab);
+    if (TAB_URL_MAP[tab] && typeof window !== 'undefined') {
+      window.location.href = TAB_URL_MAP[tab];
+    }
+  };
+
+  // Images generated previously
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 pb-16 text-left font-sans" id="program-sections-main">
+      {/* Sidebar navigation control */}
+      <div className="lg:col-span-1 space-y-4" id="programs-sidebar">
+        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs space-y-2">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Canales Activos</span>
+          <h2 className="font-display font-black text-lg text-slate-900 leading-snug">Programas de Atención</h2>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <button
+            id="prog-tab-internships-btn"
+            onClick={() => handleTabClick('internships')}
+            className={`px-5 py-4 rounded-xl text-xs font-bold transition-all text-left flex items-center justify-between border cursor-pointer ${
+              activeTab === 'internships'
+                ? 'bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-100'
+                : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <GraduationCap className="w-5 h-5 shrink-0" />
+              Prácticas y Pasantías
+            </span>
+            <ChevronRight className="w-4 h-4 shrink-0" />
+          </button>
+
+          <button
+            id="prog-tab-reports-btn"
+            onClick={() => handleTabClick('reports')}
+            className={`px-5 py-4 rounded-xl text-xs font-bold transition-all text-left flex items-center justify-between border cursor-pointer ${
+              activeTab === 'reports'
+                ? 'bg-amber-600 border-amber-600 text-white shadow-md shadow-amber-100'
+                : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 shrink-0" />
+              Informes y Denuncias de DDHH
+            </span>
+            <ChevronRight className="w-4 h-4 shrink-0" />
+          </button>
+
+          <button
+            id="prog-tab-legal-btn"
+            onClick={() => handleTabClick('legal')}
+            className={`px-5 py-4 rounded-xl text-xs font-bold transition-all text-left flex items-center justify-between border cursor-pointer ${
+              activeTab === 'legal'
+                ? 'bg-emerald-700 border-emerald-700 text-white shadow-md shadow-emerald-100'
+                : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <Scale className="w-5 h-5 shrink-0" />
+              Asesoría Jurídica Gratuita
+            </span>
+            <ChevronRight className="w-4 h-4 shrink-0" />
+          </button>
+        </div>
+
+        {/* Informative advice */}
+        <div className="bg-sky-50/50 p-4.5 rounded-2xl border border-sky-100 text-slate-600 space-y-2 text-xs">
+          <div className="flex items-center gap-1.5 font-bold text-sky-800">
+            <Info className="w-4.5 h-4.5 shrink-0" />
+            <span>Sistema Protegido</span>
+          </div>
+          <p className="leading-relaxed text-[11px]">
+            Toda la información ingresada en FUNDELIBERTAD se almacena bajo estrictos principios de confidencialidad y reserva profesional.
+          </p>
+        </div>
+      </div>
+
+      {/* Main Form/Content Workspace */}
+      <div className="lg:col-span-3">
+        <AnimatePresence mode="wait">
+          {/* A. SECTION: INTERNSHIPS */}
+          {activeTab === 'internships' && (
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 15 }}
+              className="space-y-8"
+              id="internships-panel"
+              key="internships"
+            >
+              {/* Introduction card */}
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                  <div className="space-y-3">
+                    <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block">Prácticas Universitarias</span>
+                    <h3 className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
+                      Fortalece tu Vocación en el Territorio
+                    </h3>
+                    <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
+                      <p>
+                        La organización está en la busqueda de personas idóneas, para que aporten sus conocimiemtos e ideas, con el fin de apoyar a quienes se encuentran bajo el mandato de protección de FUNDELIBERTAD.
+                      </p>
+                      <p>
+                        El programa de pasantías/prácticas de FUNDELIBERTAD es una oportunidad para estudiantes de bachillerato y recién graduados de adquirir experiencia, acorde con su programa académico o con su trabajo próximo en alguno de los ámbitos que se hallen relacionados con la misión de FUNDELIBERTAD.
+                      </p>
+                      <p>
+                        Animamos a participar a todas aquellas personas cualificadas, sin distinción de raza, color, sexo, nacionalidad, edad, religión y discapacidad.
+                      </p>
+                      <div className="pt-3 border-t border-slate-100">
+                        <span className="font-bold text-[10px] uppercase tracking-wider text-slate-700 block mb-1">FINALIDAD</span>
+                        <p className="mb-2">Los objetivos son los siguientes:</p>
+                        <ul className="list-disc pl-4 space-y-1.5">
+                          <li>Principalmente, brindar la oportunidad de ganar experiencia laboral relacionada con sus estudios académicos o futuras oportunidades de trabajo en áreas vinculadas con el mandato de FUNDELIBERTAD.</li>
+                          <li>En segundo lugar, permitir que FUNDELIBERTAD se beneficie de la labor de los pasantes.</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <AdaptiveImage
+                    src="https://lh3.googleusercontent.com/d/1VOAa3Fwpv9QvlaDHN7PP8mWY-jYImtzN"
+                    alt="Prácticas universitarias FUNDELIBERTAD"
+                    containerClassName="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-white border border-slate-200/80"
+                  />
+                </div>
+              </div>
+
+              {/* Highlight Intern card */}
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                  <div className="space-y-3">
+                    <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block">Pasante</span>
+                    <h3 className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
+                      Fabian Alejandro Areiza Valencia
+                    </h3>
+                    <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
+                      <p>
+                        Fabian Alejandro Areiza Valencia, estudiante del Servicio Nacional de Aprendizaje-SENA en el programa de Tecnología en Contabilidad y Finanzas, realiza las pasantías en FUNDELIBERTAD desde el día 5 de abril de 2021 hasta el 20 de agosto de 2021, para poder recibir su grado.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <AdaptiveImage
+                    src="https://lh3.googleusercontent.com/d/1EvbiisDrvz4JgZf3o388N7PeKMP5dxKP"
+                    alt="Pasantías en Contabilidad y Finanzas - SENA"
+                    containerClassName="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-white border border-slate-200/80"
+                  />
+                </div>
+              </div>
+
+              {/* Informative Block instead of form */}
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
+                <h4 className="font-display font-bold text-base text-slate-900 border-l-2 border-blue-600 pl-2.5">
+                  ¿Cómo vincularte a nuestro programa de Prácticas y Pasantías?
+                </h4>
+                
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Para iniciar tu proceso de prácticas profesionales o responsabilidad social con FUNDELIBERTAD, puedes comunicarte directamente con nuestro equipo de coordinación académica o enviar tus documentos institucionales. Estaremos encantados de acompañarte en tu formación:
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-5 bg-blue-50/50 rounded-xl border border-blue-100 space-y-2">
+                    <h5 className="font-bold text-xs text-blue-900 flex items-center gap-1.5">
+                      <Mail className="w-4.5 h-4.5 text-blue-600" />
+                      Envío de Documentos
+                    </h5>
+                    <p className="text-[11px] text-slate-600 leading-normal">
+                      Remite tu hoja de vida, sábana de notas actualizada y carta de presentación de tu universidad a:
+                    </p>
+                    <a href="mailto:info@fundelibertad.org" className="text-xs font-mono font-bold text-blue-700 hover:underline block pt-1">
+                      info@fundelibertad.org
+                    </a>
+                  </div>
+
+                  <div className="p-5 bg-emerald-50/50 rounded-xl border border-emerald-100 space-y-2">
+                    <h5 className="font-bold text-xs text-emerald-900 flex items-center gap-1.5">
+                      <Phone className="w-4.5 h-4.5 text-emerald-600" />
+                      Línea Directa de Coordinación
+                    </h5>
+                    <p className="text-[11px] text-slate-600 leading-normal">
+                      Escríbenos directamente vía WhatsApp para solicitar información de convenios activos con tu universidad:
+                    </p>
+                    <a href="https://wa.me/573002167822?text=Hola%20FUNDELIBERTAD%2C%20estoy%20interesado%20en%20el%20programa%20de%20pr%C3%A1cticas%20y%20pasant%C3%ADas." target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-emerald-700 hover:underline block pt-1">
+                      +57 300 216 7822
+                    </a>
+                  </div>
+                </div>
+
+              </div>
+            </motion.div>
+          )}
+
+          {/* B. SECTION: REPORTS */}
+          {activeTab === 'reports' && (
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 15 }}
+              className="space-y-8"
+              id="reports-panel"
+              key="reports"
+            >
+              {/* 26 Duplicated Denuncias Cards */}
+              {Array.from({ length: 26 }).map((_, index) => {
+                const isCaso2 = index === 1;
+                const isCaso3 = index === 2;
+                const isCaso4 = index === 3;
+                const isCaso5 = index === 4;
+                const isCaso6 = index === 5;
+                const isCaso7 = index === 6;
+                const isCaso8 = index === 7;
+                const isCaso9 = index === 8;
+                const isCaso10 = index === 9;
+                const isCaso11 = index === 10;
+                const isCaso12 = index === 11;
+                const isCaso13 = index === 12;
+                const isCaso14 = index === 13;
+                const isCaso15 = index === 14;
+                const isCaso16 = index === 15;
+                const isCaso17 = index === 16;
+                const isCaso18 = index === 17;
+                const isCaso19 = index === 18;
+                const isCaso20 = index === 19;
+                const isCaso21 = index === 20;
+                const isCaso22 = index === 21;
+                const isCaso23 = index === 22;
+                const isCaso24 = index === 23;
+                const isCaso25 = index === 24;
+                const isCaso26 = index === 25;
+                return (
+                  <div key={index} className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6" id={`denuncia-card-${index}`}>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                      <div className="lg:col-span-2 space-y-4">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-bold text-amber-700 uppercase tracking-widest block">Canal de Derechos Humanos</span>
+                        </div>
+                        <h3 className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
+                          {isCaso2 
+                            ? 'VIOLACIÓN A LA SEGURIDAD SOCIAL, SALUD Y LA VIDA' 
+                            : isCaso3 
+                            ? 'INDIGENCIA Y MENDICIDAD' 
+                            : isCaso4 
+                            ? 'LA NUEVA EPS VIOLA EL DERECHO A LA SALUD' 
+                            : isCaso5 
+                            ? 'VIOLACIÓN AL DERECHO A LA SEGURIDAD SOCIAL' 
+                            : isCaso6 
+                            ? '¿CORRUPCIÓN AL INTERIOR DE LA OFICINA DE CONTROL INTERNO DISCIPLINARIO DEL DISTRITO DE MEDELLÍN?'
+                            : isCaso7
+                            ? 'VIOLACIÓN A LOS DERECHOS HUMANOS'
+                            : isCaso8
+                            ? 'INOPERANCIA DE LA CÁMARA DE COMERCIO DE MEDELLÍN PARA ANTIOQUIA'
+                            : isCaso9
+                            ? 'VIOLACIÓN AL DERECHO A LA SALUD Y RESPONSABILIDAD MEDICA'
+                            : isCaso10
+                            ? 'MAL SERVICIO EN LA NUEVA EPS GUAYABAL'
+                            : isCaso11
+                            ? '¿EXISTE LA JUSTICIA EN COLOMBIA?'
+                            : isCaso12
+                            ? 'MALA ADMINISTRACIÓN ALCALDÍA DE MEDELLÍN'
+                            : isCaso13
+                            ? 'NO HAY TRANSPARENCIA EN LA ALCALDÍA DE MEDELLÍN'
+                            : isCaso14
+                            ? 'CORRUPCIÓN EN LA COMISARÍA 15 DE GUAYABAL DE MEDELLÍN'
+                            : isCaso15
+                            ? 'DESESCOLARIZACIÓN'
+                            : isCaso16
+                            ? '¿Y LOS SIN TECHO QUÉ?'
+                            : isCaso17
+                            ? 'VISITA LIDER SOCIAL'
+                            : isCaso18
+                            ? 'MENDICIDAD E INDIGENCIA EN EL PARQUE DE CRISTO REY GUAYABAL'
+                            : isCaso19
+                            ? 'INDIGENCIA EN EL BARRIO TRINIDAD'
+                            : isCaso20
+                            ? 'MAL ESTADO DE VÍAS'
+                            : isCaso21
+                            ? 'MALA PRESTACIÓN DE SERVICIO'
+                            : isCaso22
+                            ? 'ABUSO DE AUTORIDAD'
+                            : isCaso23
+                            ? 'DESPIDO INJUSTO Y SIN LIQUIDACION'
+                            : isCaso24
+                            ? 'MEDIO AMBIENTE'
+                            : isCaso25
+                            ? 'DESPIDO INJUSTO Y SÍN LIQUIDACIÓN'
+                            : isCaso26
+                            ? 'INDIGENCIA EN EL PARQUE DE CRISTO REY - GUAYABAL'
+                            : 'Denuncias'}
+                        </h3>
+                        
+                        <div className="text-xs text-slate-500 space-y-3.5 leading-relaxed">
+                          {isCaso2 ? (
+                            <>
+                              <p className="font-semibold text-slate-700">
+                                El sufrimiento que tienen que padecer los usuarios de las EPS; en especial en este caso la NUEVA EPS:
+                              </p>
+                              <p>
+                                El representante legal de la Organización de Derechos Humanos -FUNDELIBERTAD- vivió en carne propia la corrupción, la ineficacia y la falta de idoneidad en la entidad NUEVA EPS, ya que tuvo que pagar unos estudios radiográficos porque la NUEVA EPS no tiene contratos en el momento con Cero 70.
+                              </p>
+                              <p>
+                                Además, un funcionario de la NUEVA EPS le dijo que un hijo de él está retirado y no figura como beneficiario; sin embargo, en la página web dice otra cosa: que está vigente pero que no puede ser atendido para servicios médicos. Luego, otra funcionaria por vía telefónica le indicó que lo que pasa es que, como trabajó en una época, le toca afiliarse de nuevo.
+                              </p>
+                            </>
+                          ) : isCaso3 ? (
+                            <>
+                              <p>
+                                La Organización de Derechos humanos -FUNDELIBERTAD- ha visibilizado un problema que aqueja a la Comuna 15 de Guayabal, esto es, la alta mendicidad e indigencia que se está propagando en los diferentes sectores y barrios, en este caso en el parque de Cristo Rey.
+                              </p>
+                            </>
+                          ) : isCaso4 ? (
+                            <>
+                              <p>
+                                El día 16 de agosto de 2024 la organización de derechos humanos FUNDELIBERTAD pudo visibilizar el problema que aqueja a los usuarios, ya que están perjudicados por la no contratación y pago a las IPS para ordenar tomas radiográficas; ya que estas son necesarias para poder seguir tratamientos y diagnósticos.
+                              </p>
+                            </>
+                          ) : isCaso5 ? (
+                            <>
+                              <p>
+                                El día 23 de abril de 2024 se presenta a la oficina de FUNDELIBERTAD el señor Armando de Jesús Echeverry Avendaño, para ser asesorado sobre un problema que le aqueja en la empresa HJA S.A.S., esto es, no le pagan los aportes a seguridad social en salud, pensión y caja de compensación familiar (subsidio familiar). Además, va a presentar la renuncia con justa causa, ya que se le están violando sus derechos y la empresa como tal está incumpliendo con el contrato.
+                              </p>
+                            </>
+                          ) : isCaso6 ? (
+                            <>
+                              <p>
+                                En virtud de queja disciplinaria que formuló el señor Robinson Porras Jaramillo en contra de la Comisaria de Familia 15 de Guayabal-Medellín, el día 6 de junio de 2022 ante la Procuraduría General de La Nación, la que, por competencia se remitió a la Oficina de Control Interno Disciplinario del Distrito de Medellín, entidad que decidió el día 6 de diciembre de 2023 abrir indagación preliminar, viene presentándose una serie de circunstancias durante todo este lapso de tiempo, que pueden ser constitutivos de actos de corrupción.
+                              </p>
+                              <p>
+                                En efecto, la aludida queja disciplinaria ingresó a la Oficina de Control Interno Disciplinario del Distrito de Medellín, el día 11 de octubre de 2022, a la que, se le asignó el Radicado SEG-9052-22, y cuyo conocimiento está a cargo de la Profesional Universitaria, abogada Luz María Mena Flórez, y a la fecha tan solo ha proferido una providencia, esto es, la indagación preliminar de la que se habló anteriormente.
+                              </p>
+                              <p>
+                                Como bien puede apreciarse, dentro del lapso de tiempo comprendido entre los días 11 de octubre de 2022 y el presente, 29 de marzo de 2024, ya ha transcurrido 17 meses y 18 días, tiempo sumamente extenso para dictar únicamente una decisión.
+                              </p>
+                              <p>
+                                En el expediente citado reposa la queja disciplinaria, la que remite a una prueba documental -procesos tramitados en el despacho de la funcionaria denunciada- que es sumamente clara y que tan solo exige proceder a una lectura y estudio de los mismos, para luego emitir las decisiones que en derecho correspondan, lo que, no demanda demasiado tiempo. Por lo que, es lógico formularse el siguiente interrogante:
+                              </p>
+                              <p className="font-semibold text-slate-700">
+                                ¿Sí la funcionaria, abogada Luz María Mena Flórez, conoce de antemano que la queja disciplinaria se cimenta en una prueba documental, cómo es posible que, al día de hoy, en más de 17 meses que tiene a su cargo el correspondiente proceso, solo haya proferido un auto, esto es, el de indagación preliminar?
+                              </p>
+                              <p>
+                                Bien conoce esta funcionaria, que los términos legales deben observarse a plenitud, y que, en este caso en concreto, la figura de prescripción está próxima a cumplirse, situación de la que ya está enterada, máxime, cuando la Procuraduría Provincial de Instrucción del Valle de Aburrá la instó a proceder en el menor tiempo posible para tomar las determinaciones conforme a la ley, acatando los términos previstos en la misma. Lo que podría conducir igual y lógicamente a preguntarnos, ¿por qué tantas dilaciones en el trámite de esta actuación por parte de la abogada Luz María Mena Flórez? ¿Qué pretende con ello?
+                              </p>
+                            </>
+                          ) : isCaso7 ? (
+                            <>
+                              <p>
+                                El día 26 de marzo de 2024 el señor Ismael Porras se dirige a la Nueva EPS de Guayabal-Medellín, para reclamar una autorización que requiere para su salud, y se encuentra con un pésimo servicio, esto es, poco personal para la atención de los afiliados con problemas de salud y edad avanzada, les toca esperar hasta 2 horas para ser atendidos. Esto es inhumano, les están violando sus derechos.
+                              </p>
+                            </>
+                          ) : isCaso8 ? (
+                            <>
+                              <p>
+                                El día 5 de febrero de 2024, el señor Robinson Porras Jaramillo, representante legal de la Fundación de Derechos Humanos Por La Libertad Y La Vida -FUNDELIBERTAD- radica virtualmente una solicitud y la respectiva documentación requerida para que le hagan la devolución de dinero de un registro. Ese mismo día le fue notificado por correo electrónico de que la solicitud fue radicada exitosamente y que antes de 5 días hábiles le darían respuesta.
+                              </p>
+                              <p>
+                                Al ver que pasaban los días sin recibir respuesta, el día 13 de febrero del presente año, se comunica por vía telefónica con un funcionario de la Cámara de Comercio de Medellín y le informan que de nuevo debe realizar el envío de los documentos, cosa que realizó.
+                              </p>
+                              <p>
+                                Al ver que no recibía respuesta ni devolución del dinero, el día 20 de febrero del corriente año se comunica de nuevo con la Cámara de Comercio de Medellín por vía telefónica, y lo atiende el señor Cristian Jaramillo, y le informa que se debe de realizar un PQRS, la cual se realizó y quedó radicada. Además, dicho funcionario le dice que si en el día de hoy 20 de febrero no le dan solución que llamara al día siguiente.
+                              </p>
+                              <p>
+                                Al ver que no le dieron solución ese mismo día, el día 21 de febrero se comunica de nuevo y lo atiende por vía telefónica la señora Geraldine Monsalve, y le informa que se debe de realizar otra PQRS, la cual también de nuevo se realizó, y quedó con otro número de radicación.
+                              </p>
+                            </>
+                          ) : isCaso9 ? (
+                            <>
+                              <p>
+                                El señor Joaquín Emilio Monsalve Múnera acude a la oficina de FUNDELIBERTAD, para recibir apoyo y acompañamiento sobre un problema de salud, donde Savia Salud EPS no le ha realizado una cirugía que requiere inmediatamente, ya que esta ha sido programada en varias ocasiones desde hace más de 2 años, ya que presenta un cuadro clínico grave en su rodilla izquierda, esto es, GONARTROSIS y dolencia que le está causando en la rodilla derecha por recibir todo el apoyo de ambas piernas.
+                              </p>
+                            </>
+                          ) : isCaso10 ? (
+                            <>
+                              <p>
+                                En el mes de agosto de 2023 se ha podido visualizar el pésimo servicio que presta la Nueva EPS de Guayabal, ya que, entre las 4 y 5 de la tarde dejan a una sola funcionaria para atender al público.
+                              </p>
+                            </>
+                          ) : isCaso11 ? (
+                            <>
+                              <p>
+                                Se ha catalogado la Justicia como un conjunto de valores esenciales sobre los cuales debe basarse una Sociedad y el Estado. Estos valores son el respeto, la equidad, la igualdad y la libertad.
+                              </p>
+                              <p>
+                                En un sentido formal, la Justicia es el conjunto de normas codificadas que el Estado, a través de los organismos competentes, dicta, hace cumplir y sanciona cuando son irrespetadas, suprimiendo la acción o inacción que generó la afectación del bien común.
+                              </p>
+                              <p>
+                                Si bien existen diferentes enfoques o formas de aplicar la Justicia, como lo son, la Justicia distributiva, la Justicia restaurativa, la Justicia procesal y la Justicia retributiva, la Justicia siempre será un conjunto de valores sociales, éticos, morales y democráticos que deben prevalecer en cualquier comunidad.
+                              </p>
+                              <p>
+                                Es entonces, la Justicia una virtud que todos los individuos deben poner en práctica de manera coherente y en busca tanto del bien propio como de la sociedad.
+                              </p>
+                              <p>
+                                Lo que se espera es que cada individuo respete las normas establecidas y contribuya al mantenimiento de un entorno armónico. Y ante una situación de injusticia, lo ideal es que cada persona actúe con rectitud e imparcialidad.
+                              </p>
+                              <p>
+                                Para lograr esto, es necesario que la Justicia sea un valor inculcado por la familia, reforzado por las instituciones educativas, respetado y amparado por el Estado y sus instituciones, y puesto en práctica por la sociedad.
+                              </p>
+                              <p className="font-bold text-slate-800">
+                                ¿Ahora, será que, en nuestro país realmente existe la Justicia?
+                              </p>
+                              <p>
+                                Todos conocemos la realidad que vivimos. Y esta realidad nos demuestra día a día, que somos una sociedad decadente en principios y valores, sin educación, supremamente dividida, donde el bien y el interés común no imperan. Problemática que ya ha tocado toda la institucionalidad, lo que se refleja en la enorme corrupción que pulula en todas las entidades públicas, tanto nacionales, como departamentales y municipales.
+                              </p>
+                              <p>
+                                Corrupción, que obedece al desenfrenado interés de satisfacer única y exclusivamente afectos particulares.
+                              </p>
+                              <p>
+                                Este interés ha conducido tanto a ciudadanos como a servidores públicos, a actuar por fuera de los parámetros legales, esto es, por fuera del ordenamiento jurídico. Y cuando este se quebranta, se rompe con el Estado de Derecho, lo que conduce lastimosamente, a la vulneración de los Derechos Humanos.
+                              </p>
+                              <p>
+                                Derechos Humanos, quebrantados en buena parte por las autoridades públicas, infracciones, claro está, de las que también participa la ciudadanía.
+                              </p>
+                              <p>
+                                La verdad es que, falta mucho por hacer, para alcanzar un Estado Social, Democrático y de Derecho, máxime que nuestras instituciones hacen poco por ello, donde el Legislativo, a más de incurrir en actos de deshonestidad, se dedicó a expedir normas que solo favorecen intereses privados, olvidando completamente a las comunidades vulnerables.
+                              </p>
+                              <p>
+                                Pero aquí no termina todo, puesto que, los órganos de control, prácticamente son inoperantes, y el operador de justicia, a pesar de presentarse actos de corrupción al interior de la rama judicial -así lo indican los diversos fallos proferidos por las respectivas instancias-, está maniatado, por cuanto aplica la norma que le pone de presente el legislador. Norma que, no consulta con los intereses de la Nación.
+                              </p>
+                              <p>
+                                Y no consulta, porque siempre se han favorecido intereses particulares, dejando de lado, el interés público, el interés social, el interés comunal, el interés familiar y el interés de todo ciudadano. Por ello, lamentablemente la Justicia en Colombia no es más que una simple Quimera.
+                              </p>
+                            </>
+                          ) : isCaso12 ? (
+                            <>
+                              <p>
+                                El día 11 de julio de 2023, el señor Robinson Porras representante legal de FUNDELIBERTAD, se dirigió a la oficina de correspondencia de la Alcaldía de Medellín para radicar un documento, y percibió la pésima atención en el servicio, ya que no hay suficiente personal para la atención a la comunidad, además, una de las funcionarias le informó que al momento no hay contratación, ese es el problema, y la ciudadanía tiene que pagar por los platos rotos.
+                              </p>
+                            </>
+                          ) : isCaso13 ? (
+                            <>
+                              <p>
+                                El día sábado 29 de octubre de 2022 la Fundación de Derechos Humanos por la Libertad y la Vida -FUNDELIBERTAD- estuvo en la invitación hecha por la Alcaldía de Medellín, para el pre-encuentro de organizaciones sociales, esto es, para un intercambio de experiencias y practicas de la verdad, para mas luego en el mes de diciembre tener el encuentro anual de todas las organizaciones sociales.
+                              </p>
+                              <p>
+                                En dicho evento se pudo presenciar que no hubo transparencia en los temas tratados como fueron, el apoyo del gobierno municipal, ya que las organizaciones no reciben recursos para poder ejecutar sus proyectos, además, cuando hay la posibilidad de ejecutar un proyecto, el operador se queda con el 40% o 50% del recuso. De ahí, la pregunta, si estamos es un País Social de Estado de Derecho, porqué a las organizaciones sociales no las tienen en cuenta para que ejecuten sus proyectos, reciban recursos económicos y no sean utilizadas por los políticos de turno?
+                              </p>
+                            </>
+                          ) : isCaso14 ? (
+                            <>
+                              <p>
+                                Desde el año 2020 la Fundación de Derechos Humanos por la Libertad y La Vida -FUNDELIBERTAD- ha podido visualizar y detectar actuaciones irregulares que se presentaron por parte de la Señora Comisaria 15 de Guayabal de Medellín Flor María Mesa Martínez, en el inicio y desarrollo de procesos administrativos que tuvo a su cargo, vulnerándose presuntamente las garantías y los derechos fundamentales de alguna de las partes que en ellos han intervenido. A la fecha, reposa ante las autoridades correspondientes, una queja disciplinaria en contra de dicha funcionaria para lo de su cargo.
+                              </p>
+                            </>
+                          ) : isCaso15 ? (
+                            <>
+                              <p>
+                                En el transcurso del año 2022 se ha podido visualizar que en las Instituciones Educativas del País, hay un índice alto de Descolarización. Según las investigaciones se cree que es debido a los problemas familiares, sociales, económicos, falta de empleo y oportunidades.
+                              </p>
+                            </>
+                          ) : isCaso16 ? (
+                            <>
+                              <p>
+                                Desde hace varios años viene habitando bajo el descanso del puente peatonal ubicado en el Parque de Cristo Rey Comuna 15 de Guayabal, carrera 52 con calle 1 sur, una pareja de ancianos que no cuenta con los recursos para tener acceso a una vivienda digna. Pero lastimosamente, este no es el único caso que se presenta en la comuna, pues hay varios sectores con la misma problemática.
+                              </p>
+                              <p>
+                                Señor Alcalde, con toda consideración y respeto, podríamos preguntarnos, si está planeado para este año 2022, construir el metro de la avenida 80, ¿porqué así mismo, no se invierte en pro de las personas desvalidas? ¿porqué hay recursos para adelantar obras civiles y proyectos de ciudad, y porqué no los hay para invertir en la sociedad civil?
+                              </p>
+                            </>
+                          ) : isCaso17 ? (
+                            <>
+                              <p>
+                                En días pasados tuvimos la grata oportunidad de recibir al gran líder social del Departamento de Antioquia, el señor José Luis García Quintero, quien nos día a conocer una situación anómala que viene presentándose, quizás en el mayor proyecto político dentro de la campaña política que se está desarrollando con miras a alcanzar alguna curul en el Congreso de la República, para el período 2022-2026. Tal proyecto lo representa el Pacto Histórico que lidera el Senador y actual candidato presidencial, el señor Gustavo Petro, y como es conocido por toda la opinión pública, en dicho proyecto se invitó a todos los líderes sociales, si así lo deseaban, a que participaran en el, haciendo parte del mismo, y a que tuvieran la oportunidad de conformar las listas del movimiento para las elecciones que se avecinan.
+                              </p>
+                              <p>
+                                En virtud de ello, el líder social José Luis García Quintero acudió ante las personas que representan al pacto histórico en Antioquia, para participar libre y democráticamente en las inscripciones para las listas al Congreso de la República, esto es, bajo el tamiz de la selección junto con otros líderes, pero se encuentra con la sorpresa, que la lista por Antioquia, como es de público conocimiento, es cerrada, y los primeros renglones ya estaban designados, impidiendo con ello, la inscripción en tales renglones de verdaderos líderes sociales, esto es, con mucho respeto, no es democracia, ya que, se están definiendo las listas, tal como lo hacen los otros partidos y movimientos políticos.
+                              </p>
+                              <p>
+                                En el caso concreto, el del líder social García Quintero, de quien creemos, merece estar en los primeros renglones de cualquier lista por Antioquia, quienes representan el Pacto Histórico en Antioquia, lo recibieron, pero luego de muchos diálogos, le manifestaron que no había lugar para él en la lista por Antioquia. Con todo respeto se puede preguntar, que está sucediendo en las filas del Pacto Histórico en Antioquia? Será que las decisiones que toman las directivas del Pacto Histórico en Antioquia, son unilaterales, o son consultadas con Bogotá?<br />
+                                ¿Será que hay democracia en la conformación de sus listas?
+                              </p>
+                            </>
+                          ) : isCaso18 ? (
+                            <>
+                              <p>
+                                En el mes de abril de 2021 la Organización de Derechos Humanos por la Libertad y la Vida – FUNDELIBERTAD realiza una investigación sobre la Mendicidad e Indigencia que se está tomando la Comunidad del Barrio Cristo Rey y especialmente su Parque que es una zona de Recreación y Esparcimiento Social.
+                              </p>
+                            </>
+                          ) : isCaso19 ? (
+                            <>
+                              <p>
+                                Gravísima problemática, viene presentándose desde hace muchos años en el Barrio Trinidad de ésta ciudad, concretamente en la carrera 65, entre calles 18 y 20, pues en el costado occidental de la quebrada que atravieza el sector, se han afincado un sín número de menesterosos, generando por ende mucha preocupación entre residentes y comerciantes.
+                              </p>
+                              <p>
+                                No puede pasarse por alto, que es obligación del Estado, velar para que éstas personas se reincorporen a las comunidades de las cuales salieron.
+                              </p>
+                            </>
+                          ) : isCaso20 ? (
+                            <>
+                              <p>
+                                Como bien puede apreciarse en las gráficas, éste es el estado lamentable en el que se encuentra la carrera 55 entre calles 1 A y 2, y la calle 1 A entre carreras 55 y 56, sector El Rodeo, Comuna 15 de ésta ciudad. Llama la atención, que muchos residentes de éste vecindario han formulado desde antaño, las respectivas peticiones para que las pavimenten, y a la fecha, la Administración Municipal no se ha pronunciado al respecto.
+                              </p>
+                            </>
+                          ) : isCaso21 ? (
+                            <>
+                              <p>
+                                Desde hace varios meses, viene recibiéndose en la sede de la Fundación, innumerables quejas con respecto a la prestación del servicio de transporte público por parte de la empresa SOLOBUS, entre ellas, que de una misma ruta, circulan a la vez dos o tres buses, y hay que esperar demasiado tiempo, para el paso del próximo; así mismo, muchos conductores no se detienen en los paraderos correspondientes, dejando a muchos usuarios sin acceso al servicio.
+                              </p>
+                            </>
+                          ) : isCaso22 ? (
+                            <>
+                              <p>
+                                Hasta cuando los Guardas de Tránsito van a seguir exigiendo lo que no está contemplado en la Ley ?
+                              </p>
+                            </>
+                          ) : isCaso23 ? (
+                            <>
+                              <p>
+                                El señor Leonardo de Jesús Velásquez es asesorado por Fundelibertad, ya que manifiesta que fue despedido injustamente y sin liquidación de sus prestaciones sociales a las que tiene pleno derecho, por su empleador el señor Bernardo Arteaga Velásquez, cuando prestaba sus servicios en la Finca Divisadero ubicada en el Municipio de Anzá – Antioquia por un tiempo de 4 años y 9 meses.
+                              </p>
+                            </>
+                          ) : isCaso24 ? (
+                            <>
+                              <p>
+                                Cómo es posible que el Parque natural ubicado en el sector de Mallorca al lado del aeroparque – Guayabal, la comunidad permita que utilicen dicha Reserva para sitio de vicio y drogadicción, ya que se han presentado varias quejas pero las autoridades no han podido dar solución. Algunos vecinos del sector han venido a Fundelibertad para que los asesoren y saber que medidas tomar al caso.
+                              </p>
+                            </>
+                          ) : isCaso25 ? (
+                            <>
+                              <p>
+                                Es preocupante hoy en día la situación laboral en Colombia, como es el caso del Señor Miguel ángel Rodríguez Ríos, ya que acude a la Organización para denunciar y demandar al señor Víctor Hugo Vélez López por despedirlo injustamente y no pagarle sus prestaciones sociales a las cuales tiene pleno derecho. Manifiesta que su cargo era de oficios varios, ya que su jefe, el señor mencionado, es propietario de varios inmuebles que los tiene destinados para arrendarlos a turistas.
+                              </p>
+                            </>
+                          ) : isCaso26 ? (
+                            <>
+                              <p>
+                                Con profunda preocupación la Comunidad del Sector observa como el parque de Cristo Rey va siendo copado por personas menesterosas, y sin ningún tipo de recursos para poder llevar una vida digna, tal como lo reclaman la Carta de Derechos de la O.N.U. y demás Instrumentos Internacionales ratificados por Colombia. Hasta cuando, nuestras autoridades van a seguir permitiendo que estas situaciones se sigan presentando, conociéndose de antemano, que es su obligación constitucional y legal, velar por el bienestar de todos los ciudadanos sin distinción alguna.
+                              </p>
+                            </>
+                          ) : (
+                            <>
+                              <p>
+                                Es de conocimiento general, que una de las herramientas con las que cuenta la ciudadanía en general, para dar a conocer determinada problemática que afecte a sus comunidades, lo es, la denuncia, bien sea particular o pública. Por ello, FUNDELIBERTAD en pro de los derechos fundamentales, de los derechos sociales, económicos y culturales, y de los derechos colectivos y del ambiente, decepcionará de cualquier fuente, para proceder a efectuar la correspondiente denuncia pública, los hechos o los actos que atenten contra ellos.
+                              </p>
+
+                              <div className="p-4 bg-amber-50 border border-amber-100 rounded-xl space-y-2 text-amber-950 font-medium">
+                                <p className="font-bold uppercase tracking-wider text-[10px] text-amber-800">
+                                  ¡ A LA ESPERA DE UNA DECISIÒN ADMINISTRATIVA CONFORME A DERECHO ¡
+                                </p>
+                                <p>
+                                  El señor Robinson Porras Jaramillo formuló queja disciplinaria en contra de la Señora Comisaria de Familia 15 de Guayabal-Medellín, el día 6 de junio de 2022 ante la Procuraduría General de La Nación, entidad que, por competencia, ordenó remitir la misma a la Oficina de Control Interno Disciplinario del Distrito de Medellín, organismo que, a su vez, decidió el día 6 de diciembre de 2023 según su criterio, abrir indagación preliminar.
+                                </p>
+                              </div>
+
+                              <p>
+                                La aludida queja disciplinaria ingresó a la Oficina de Control Interno Disciplinario del Distrito de Medellín, el día 11 de octubre de 2022, a la que, se le asignó el Radicado SEG-9052-22, y su conocimiento estuvo a cargo de la Profesional Universitaria, abogada Luz María Mena Flórez.
+                              </p>
+
+                              <p>
+                                Dicha funcionaria, mientras tuvo asignado a su despacho el respectivo expediente, esto es, en un tiempo aproximado de 19 meses, tan solo profirió una sola decision, cual no es otra que el auto que ordena abrir indagación preliminar. Lapso de tiempo, sumamente extenso para dictar únicamente una providencia.
+                              </p>
+
+                              <p>
+                                Posteriormente, la abogada Mena Flórez fue trasladada a otra sección, razón por la cual, el expediente fue asignado al abogado Jorge Iván Martínez Carvajal, quien en el mes de mayo del corriente año, procedió, luego de dictar apertura formal de investigación disciplinaria, a citar al quejoso para que rindiera declaración juramentada sobre los hechos denunciados. Diligencia, a la que compareció el pasado 7 de junio de este año.
+                              </p>
+
+                              <p className="font-bold text-slate-800 pt-1">
+                                A esta altura procesal es importante traer a colación dos aspectos fundamentales, a saber:
+                              </p>
+
+                              <ul className="list-disc pl-5 space-y-2 text-slate-500">
+                                <li>
+                                  <strong>En primer lugar</strong>, la queja disciplinaria, sobre la cual se cimenta la correspondiente actuación, se remite a una prueba documental -procesos tramitados en el despacho de la funcionaria denunciada- que es sumamente clara y que tan solo exige proceder a una lectura y estudio de los mismos, para luego emitir las decisiones que en derecho correspondan, lo que, no demanda demasiado tiempo.
+                                </li>
+                                <li>
+                                  <strong>En segundo término</strong>, quienes tuvieron bajo su conocimiento el correspondiente proceso, antes de que fuera asignado al abogado Jorge Iván Martínez Carvajal, asumieron una posición omisiva, puesto que, en un considerable lapso de tiempo, se limitaron a dictar una sola providencia, lo que, con todo respeto es inadmisible, ya que, conforme con los términos legales establecidos en la norma, la actuación disciplinaria ya debería haber finiquitado.
+                                </li>
+                              </ul>
+
+                              <p>
+                                Todo esto nos refleja, que en este país es común que, quienes infrinjan presuntamente la norma penal o disciplinaria, no respondan por sus actuaciones, por cuanto los correspondientes procesos nunca culminan dentro de los términos legales estipulados en nuestro ordenamiento, dando cabida en ultimas a la figura jurídica de la prescripción. Figura, que se presenta gracias a las dilaciones injustificadas en las que incurren los funcionarios públicos encargados de administrar justicia penal y disciplinaria, lo que constituye verdaderos actos de corrupción.
+                              </p>
+
+                              <p>
+                                En el proceso en comento, mientras el expediente estuvo a cargo de la abogada Mena Flórez, se presentaron muchas dilaciones. Situación que cambió, when el mismo fue asignado al conocimiento de otro funcionario.
+                              </p>
+
+                              <p className="font-medium text-slate-800">
+                                Por ello, se espera que el trámite disciplinario continue por sus cauces legales, y se dicte, una vez agotadas todas las etapas pertinentes, la decisión de fondo que en derecho corresponda, evitando que opere la prescripción de la acción disciplinaria.
+                              </p>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <AdaptiveImage
+                        src={
+                          isCaso2 
+                            ? "https://lh3.googleusercontent.com/d/1bDnC-hfE7sS3eU-b_BhWOyHmzOQUso0n" 
+                          : isCaso3 
+                            ? "https://lh3.googleusercontent.com/d/1adoqJROSjTXRuglqUj83KcDBNyniZj96" 
+                          : isCaso4 
+                            ? "https://lh3.googleusercontent.com/d/1udDGxkm6D1AZ5tk034xYcCugtHGG4l6P" 
+                          : isCaso5 
+                            ? "https://lh3.googleusercontent.com/d/1dKTp2UO9qozk0jfAl64yPHJw2RxWvD9Z" 
+                          : isCaso6 
+                            ? "https://lh3.googleusercontent.com/d/1SPeNo9o92rBmQipCNnkpS1UDZj5CkbEj" 
+                          : isCaso7 
+                            ? "https://lh3.googleusercontent.com/d/1JAOjZGuP5Ithu9Q3k29sXmOATIJ9Gch0" 
+                          : isCaso8 
+                            ? "https://lh3.googleusercontent.com/d/1DsdM0e27mtu_3ExeACFqvKBc9Zngid1n" 
+                          : isCaso9 
+                            ? "https://lh3.googleusercontent.com/d/1zQ_8dovIpzc5O08Kf2xgfiWzLoOByZCf" 
+                            : isCaso10 
+                            ? "https://lh3.googleusercontent.com/d/188DebVLM5gJZxdFH4m6BBTe-zEV5QBtk" 
+                            : isCaso11 
+                            ? "https://lh3.googleusercontent.com/d/1hQLcFSlScmt7G0Kk3f9w-30oGteiVf4Y" 
+                            : isCaso12 
+                            ? "https://lh3.googleusercontent.com/d/1Snvq2wgD-2DU7lMVgvYqg6JTwY7S7ksh" 
+                            : isCaso13 
+                            ? "https://lh3.googleusercontent.com/d/1wL0wyRkooLrjB5CskZP8PexvWNpObZs2" 
+                            : isCaso14 
+                            ? "https://lh3.googleusercontent.com/d/1iR4WDs72NnVxU18gO4PLgHKHG5DeyJlf" 
+                            : isCaso15 
+                            ? "https://lh3.googleusercontent.com/d/1u9f33ridYSnOuC6brLLa6OGgkkUsQwoh" 
+                            : isCaso16 
+                            ? "https://lh3.googleusercontent.com/d/1Sjsr8VcyJgG0RRwmzzYa7CIwHu3A8G8a" 
+                            : isCaso17 
+                            ? "https://lh3.googleusercontent.com/d/13Sv4pxyNuzVKUVeCBYQdj8N5baxfevHo" 
+                            : isCaso18 
+                            ? "https://lh3.googleusercontent.com/d/1CgD_tGkLRJ3JLOvqsJ4JFFgrSFNBOk2K" 
+                            : isCaso19 
+                            ? "https://lh3.googleusercontent.com/d/1W2BgI3ixk_4IA6SU358h5vTNQ5f8IAXJ" 
+                            : isCaso20 
+                            ? "https://lh3.googleusercontent.com/d/1a_4RAL9cwm4_ogeusQ6trrSnkl9D75dJ" 
+                            : isCaso21 
+                            ? "https://lh3.googleusercontent.com/d/10KhIF0T7kYj0C5OXtzGBMRMA5BbsWp7r" 
+                            : isCaso22 
+                            ? "https://lh3.googleusercontent.com/d/1k9H9QIClLlDbnGh-68PhLwXmHj2MWvBZ" 
+                            : isCaso23 
+                            ? "https://lh3.googleusercontent.com/d/11e1lbmeK-PV-ApPRcdwQL1OQggzdQQ-0" 
+                            : isCaso24 
+                            ? "https://lh3.googleusercontent.com/d/1YZ2D3qWXMrdoI2E3skuakxxcOAgx8StF" 
+                            : isCaso25 
+                            ? "https://lh3.googleusercontent.com/d/11k_VvOeCNz_HHI2-2rDe8jXGKPIPmen2" 
+                            : isCaso26 
+                            ? "https://lh3.googleusercontent.com/d/16LjDJt03nDLwJA5UKeykdKaNsdcJWPDk" 
+                            : reportsImg
+                        }
+                        alt={
+                          isCaso2
+                            ? "Violación a la Seguridad Social y la Salud"
+                            : isCaso3
+                            ? "Indigencia y mendicidad"
+                            : isCaso4
+                            ? "La Nueva EPS viola el derecho a la salud"
+                            : isCaso5
+                            ? "Violación al derecho a la seguridad social"
+                            : isCaso6
+                            ? "Corrupción en control interno"
+                            : isCaso7
+                            ? "Violación a los derechos humanos y derecho a la salud"
+                            : isCaso8
+                            ? "Inoperancia de la Cámara de Comercio de Medellín"
+                            : isCaso9
+                            ? "Violación al derecho a la salud y responsabilidad médica"
+                            : isCaso10
+                            ? "Mal servicio en la Nueva EPS Guayabal"
+                            : isCaso11
+                            ? "¿Existe la justicia en Colombia?"
+                            : isCaso12
+                            ? "Mala administración de la Alcaldía de Medellín"
+                            : isCaso13
+                            ? "No hay transparencia en la Alcaldía de Medellín"
+                            : isCaso14
+                            ? "Corrupción en la Comisaría 15 de Guayabal"
+                            : isCaso15
+                            ? "Desescolarización en las instituciones educativas"
+                            : isCaso16
+                            ? "¿Y los sin techo qué?"
+                            : isCaso17
+                            ? "Visita de líder social de Antioquia"
+                            : isCaso18
+                            ? "Mendicidad e indigencia en el Parque de Cristo Rey"
+                            : isCaso19
+                            ? "Indigencia en el Barrio Trinidad"
+                            : isCaso20
+                            ? "Mal estado de vías en el sector El Rodeo"
+                            : isCaso21
+                            ? "Mala prestación de servicio de transporte público SOLOBUS"
+                            : isCaso22
+                            ? "Abuso de autoridad por Guardas de Tránsito"
+                            : isCaso23
+                            ? "Despido injusto y sin liquidación"
+                            : isCaso24
+                            ? "Contaminación y abandono en el Parque Natural Mallorca"
+                            : isCaso25
+                            ? "Despido injusto y sin liquidación - Miguel Ángel Rodríguez"
+                            : isCaso26
+                            ? "Indigencia en el Parque de Cristo Rey - Guayabal"
+                            : 'Denuncias DDHH FUNDELIBERTAD'
+                        }
+                        containerClassName="lg:col-span-1 h-64 lg:h-80 rounded-xl overflow-hidden bg-white border border-slate-200/80"
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* Informative Block instead of form */}
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-display font-bold text-base text-slate-900 border-l-2 border-amber-600 pl-2.5">
+                    ¿Cómo denunciar o reportar vulneraciones de DDHH?
+                  </h4>
+                  <div className="flex items-center gap-1.5 bg-slate-100 px-3 py-1 rounded-full text-[10px] font-mono text-slate-500">
+                    <Lock className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Línea Confidencial</span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  En FUNDELIBERTAD protegemos tu voz y tu seguridad. Si has sido testigo o víctima de alguna vulneración de tus derechos fundamentales, abuso de autoridad, discriminación extrema o amenazas, puedes denunciarlo de forma totalmente confidencial y segura a través de los siguientes canales:
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-5 bg-amber-50/50 rounded-xl border border-amber-100 space-y-2">
+                    <h5 className="font-bold text-xs text-amber-950 flex items-center gap-1.5">
+                      <Mail className="w-4.5 h-4.5 text-amber-600" />
+                      Reporte por Correo Seguro
+                    </h5>
+                    <p className="text-[11px] text-amber-800 leading-normal">
+                      Remite los hechos, evidencias físicas o testimonios de manera anónima o identificada al correo institucional de reserva:
+                    </p>
+                    <a href="mailto:info@fundelibertad.org" className="text-xs font-mono font-bold text-amber-900 hover:underline block pt-1">
+                      info@fundelibertad.org
+                    </a>
+                  </div>
+
+                  <div className="p-5 bg-emerald-50/50 rounded-xl border border-emerald-100 space-y-2">
+                    <h5 className="font-bold text-xs text-emerald-900 flex items-center gap-1.5">
+                      <Phone className="w-4.5 h-4.5 text-emerald-600" />
+                      Atención Urgente WhatsApp
+                    </h5>
+                    <p className="text-[11px] text-slate-600 leading-normal">
+                      Comunícate directamente con nuestros defensores seniors para agendar una cita virtual o física bajo estricta reserva profesional:
+                    </p>
+                    <a href="https://wa.me/573002167822?text=Hola%20FUNDELIBERTAD%2C%20necesito%20radicar%20una%20denuncia%20o%20informe%20de%20vulneraci%C3%B3n%20de%20DDHH." target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-emerald-700 hover:underline block pt-1">
+                      +57 300 216 7822
+                    </a>
+                  </div>
+                </div>
+
+              </div>
+            </motion.div>
+          )}
+
+          {/* C. SECTION: LEGAL ADVISORY */}
+          {activeTab === 'legal' && (
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 15 }}
+              className="space-y-8"
+              id="legal-panel"
+              key="legal"
+            >
+              {/* Introduction cards (Duplicated 35 times as requested, filtered to remove block 2) */}
+              {Array.from({ length: 35 })
+                .map((_, i) => i)
+                .filter(i => i !== 1)
+                .map((originalIndex, displayIndex) => {
+                  const index = originalIndex;
+                  let title = "Consulta a Abogados Comunitarios de Confianza";
+                let description = "Radica tu consulta en cualquiera de las áreas de derecho civil, laboral, familiar, tributario o pensiones. Un abogado asignado examinará tu caso de manera técnica y estructurada de forma gratuita para guiar tus reclamaciones.";
+
+                if (index === 0) {
+                  title = "FUNDELIBERTAD";
+                  description = "Como organización social, que propende por la defensa y protección de los derechos humanos, presta el servicio de asesoría legal gratuita a toda persona que la requiera, sin distinción alguna, en los campos del derecho civil, penal, laboral, familia, administrativo y constitucional.";
+                } else if (index === 1) {
+                  title = "PENSIÒN O INDEMNIZACIÒN";
+                  description = "El dìa 8 de octubre del 2024 se presenta a la organizaciòn de derechos humanos -FUNDELIBERTAD- la señora Maria Eugenia Osorio, con el fin de recibir asesorìa si es posible acceder al derecho de una pensiòn por enfermedad comùn o a una indemizaciòn, ya que tuvo un accidente.";
+                } else if (index === 2) {
+                  title = "PENSIÒN DE INVALIDEZ";
+                  description = "El dìa 3 de septiembre de 2024 acudieron  a la Fundaciòn de Derechos Humanos -FUNDELIBERTAD- las señoras Rita Eugenia Asprilla y Elizabet Gaviria para recibir informaciòn de que si es posible acceder a la pensiòn de invalidez por la enfermedad que obtuvieron en el trabajo.";
+                } else if (index === 3) {
+                  title = "ACCIDENTE DE TRABAJO Y ENFERMEDAD LABORAL";
+                  description = "El dìa 28 de agosto de 2024 se presentaron a la oficina de derechos humanos -FUNDELIBERTAD- las señoras Ana Maria Cortès y Elizabeth Gaviria, para tratar un asunto de posible pensiòn e indemnizaciòn por accidente de trabajo y enfemedad laboral, ya que una de ellas lleva màs de 8 meses incapacitada y la otra lleva 29 años laborando y allì adquiriò varias enfermedades.";
+                } else if (index === 4) {
+                  title = "PRESTACIONES SOCIALES E INDEMNIZACIÒN";
+                  description = "El señor Nim Pamplona se presentò el dìa 27 de agosto de 2024 a la oficina de FUNDELIBERTAD con el fin si es posible reclamar las prestaciones sociales donde laborè un año y medio, ya que mi contrato era por obra o labor, y ademàs, creo que tengo derecho a una indemnizaciòn por una enfermedad que adquirì por mis oficios.";
+                } else if (index === 5) {
+                  title = "PRESTACIONES SOCIALES";
+                  description = "El dìa 7 de febrero de 2024 hace presencia en FUNDELIBERTAD el señor Hugo Leòn Posada Casas, para ser orientado sobre un asunto de prestaciones sociales a las cuales podrìa tener derecho de la empresa que laboraba.";
+                } else if (index === 6) {
+                  title = "CONTRATO DE PRENDA SIN TENENCIA";
+                  description = "El dìa 3 de agosto de 2024 se dirigiò a la oficina de FUNDELIBERTAD la señora Tibisay Restrepo para recibir asesorìa sobre un contrato de prenda sin tenencia que firmò su madre, ya que en dicho contrato no se pactaron ciertas situaciones.";
+                } else if (index === 7) {
+                  title = "PENSIÒN VEJEZ Y PENSIÒN INVALIDEZ";
+                  description = "El dìa 11 de julio de 2024 se acerca a la oficina de FUNDELIBERTAD la señora Rubiela Rojas, con el fin de tener conocimiento si es posible acceder a la pensiòn de vejez e invalidez.";
+                } else if (index === 8) {
+                  title = "TERMINACIÒN CONTRATO DE ARRIENDO VIVIENDA";
+                  description = "El señor Alejandro Velasquez Tabares, se dirigiò a la oficina de FUNDELIBERTAD el dìa 9 de julio de 2024, para recibir asesorìa sobre un asunto de contrato de arriendo para vivienda, ya que segùn èl, la agencia de arrendamineto no està cumpliendo con legalidad el contrato.";
+                } else if (index === 9) {
+                  title = "PENSIÒN POR ACCIDENTE DE TRABAJO";
+                  description = "El dìa 28 de junio de 2024 se dirigiò a las instalaciones de FUNDELIBERTAD el señor Bayron Alberto Restrepo con el fin de ser asesorado sobre un accidente que tuvo de trabajo y poder recibir la pensiòn de invalidez, la cual tiene pleno derecho.";
+                } else if (index === 10) {
+                  title = "PRESTACIONES SOCIALES Y DERECHO A LA SEGURIDAD SOCIAL";
+                  description = "El dìa 20 de junio de 2024 hacen presencia en FUNDELIBERTAD los señores Hugo Montoya posada y Jonathan Puello Castañeda, para ser orientados sobre un asunto de prestaciones sociales a las cuales tienen derecho de la empresa que laboraban, y ademàs, les fueron violados sus derechos a la seguridad social, esto es, inconsistencias en pago a los aportes en salud y pensiòn.";
+                } else if (index === 11) {
+                  title = "VICTIMA DEL CONFLICTO ARMADO";
+                  description = "El dìa 4 de junio de 2024 se dirigiò a la oficina de FUNDELIBERTAD el señor Rafael Hernandez, con el fin de saber si tiene derecho a reclamar la indemnizaciòn administrativa que otorga el estado como victima del conflicto.";
+                } else if (index === 12) {
+                  title = "PENSIÒN POR ENFERMEDAD LABORAL";
+                  description = "El dìa 4 de junio de 2024 se acerca a las instalaciones de la oficina FUNDELIBERTAD la señora Carmen Helena Romero Ruiz, con el fin de apoyarla sobre la enfermedad que le causò su trabajo, ya que la ARL le dice que su problema de salud no es laboral sino comùn.";
+                } else if (index === 13) {
+                  title = "DERECHO A LA SEGURIDAD SOCIAL";
+                  description = "El señor Andrès Martinez Garcìa asiste a la oficina de derechos humanos -FUNDELIBERTAD- con el fin de recibir asesoramiento sobre el derechos a la seguridad social que tiene derecho, ademàs, si es posible acceder a la pensiòn de invalidez.";
+                } else if (index === 14) {
+                  title = "PRESTACIONES SOCIALES Y APORTES A PENSIÒN";
+                  description = "El dìa 22 de abril de 2024 se presenta a la oficina de FUNDELIBERTAD el señor Abraham Espinoza Espinoza, con el fin de recibir asesorìa sobre una liquidaciòn de prestaciones sociales, la cual le fue mal liquidada, ademàs, por el pago de unos aportes en pensiòn que no le fueron cancelados en el fondo de pensiones.";
+                } else if (index === 15) {
+                  title = "ASESORÌA PENSIONAL";
+                  description = "El día 10 de abril de 2024 acude a la organización de derechos humanos FUNDELIBERTAD el señor Arbey Duván Marín Serna, con el fin de recibir asesoramiento pensional, ya que cree posiblemente tener derecho a ella.";
+                } else if (index === 16) {
+                  title = "DERECHO A LA SEGURIDAD SOCIAL";
+                  description = "El dìa 23 de marzo de 2024 se presenta a la oficina de FUNDELIBERTAD el señor Armando de Jesùs Echeverry Avendaño, para se asesorado sobre un  problema que le aqueja en la empresa donde labora, esto es, desde el año 2023 no le pagan los aportes a seguridad social consecutivamente, ya que hay meses que està activo y otras veces inactivo en su EPS.";
+                } else if (index === 17) {
+                  title = "PENSIÒN VEJEZ";
+                  description = "El dìa 29 de febrero de 2024 acude a las instalciones de FUNDELIBERTAD el señor Aycardo de Jesus Londoño, para ser asesorado si tiene derecho a reclamar la pensiòn que supuestamente tiene derecho, ya que no tiene la documentaciòn requerida.";
+                } else if (index === 18) {
+                  title = "RESPONSABILIDAD CIVIL";
+                  description = "Los dìas 26, 27 y 28 de febrero de 2024, el señor Josè Alejandro Lara Sanchez se comunica con FUNDELIBERTAD mediante medios tecnològicos, para tratar un asunto que lo aqueja, esto es, en su residencia es accidentado por una alfombra de un 4º O 5º piso que se callò, el cual le ocasionò heridas en la cabeza, y su motocicleta fue averiada, por lo tanto necesitaba saber a quien le corresponde correr con los gastos pertinentes.";
+                } else if (index === 19) {
+                  title = "HURTO POR MEDIOS INFORMATICOS";
+                  description = "El señor Jorge Humberto Restrepo Maya se dirigiò a las instalaciones de FUNDELIBERTAD, con el fin de ser asesorado y apoyado para una recuperaciòn de su dinero que estaba depositado en una Entidad Bancaria, y la cual le fue hurtada por transferencias delitivas.";
+                } else if (index === 20) {
+                  title = "DERECHO DE SUCESIÒN";
+                  description = "El dìa 13 de febrero de 2024 asisten a la oficina de FUNDELIBERTAD las señoras Blanca Miriam Quirama Ramirez y Claudia Quirama Ramirez, con el fin de ser asesoradas sobre una herencia que dejò su Padre, ya que este falleciò.";
+                } else if (index === 21) {
+                  title = "PRESTACIONES SOCIALES";
+                  description = "El dìa 7 de febrero de 2024 hace presencia en FUNDELIBERTAD el señor Hugo Leòn Posada Casas, para ser orientado sobre un asunto de prestaciones sociales a las cuales podrìa tener derecho de la empresa que laboraba.";
+                } else if (index === 22) {
+                  title = "DERECHO A LA SALUD";
+                  description = "El señor Joaquin Emilio Monsalve Munera acude a las instalaciones de la Organizaciòn de Derechos Humanos -FUNDELIBERTAD- el dìa 23 de enero de 2024 para que lo apoyemos en un problema de salud que lo aqueja, esto es, Gonartrosis de rodilla izquierda y con dolencias en la rodilla derecha, ya que su EPS Savia Salud no le ha hecho la cirujia que requiere inmediatamente.";
+                } else if (index === 23) {
+                  title = "INDEMNIZACIÒN O PENSION INVALIDEZ";
+                  description = "El dìa 3 de enero de 2024 se presenta a la oficina de FUNDELIBERTAD, la señora Margarita Patricia Alvarez Guzman, con el fin de saber si tiene pleno derecho a una indemnizaciòn o pensiòn de invalidez por la enfermedad que le ocasionò su trabajo.";
+                } else if (index === 24) {
+                  title = "LIQUIDACION PRESTACIONES SOCIALES";
+                  description = "El día 6 de diciembre de 2023 se presentaron a la oficina de la organización de derechos humanos -FUNDELIBERTAD- los señores Yohanderson Alcalá y Gabriel Velásquez, con el fin de apoyarlos en un asunto de prestaciones sociales, ya que según ellos, tienen derecho, por que su jefe inmediato les informan que no les corresponde porque no hay contrato laboral.";
+                } else if (index === 25) {
+                  title = "INDEMNIZACIÒN POR PERJUICIOS";
+                  description = "El día 1º de septiembre de 2023 acude a la organización de derechos humanos FUNDELIBERTAD el señor José Horacio Vásquez Rivera, con el fin de recibir asesoramiento sobre una sentencia dictada por el Tribunal Superior de Medellín -sala laboral- a favor de èl y en contra de la empresa Grupo Empresarial Jahem Constructora s.a.s., donde le ordenan a esta a pagar una indemnización por perjuicios Morales y lucro cesante.";
+                } else if (index === 26) {
+                  title = "PENSIÒN SOBREVIVIENTES";
+                  description = "El día 30 de agosto de 2023 acude a la organización de derechos humanos FUNDELIBERTAD el señor Arbey Duván Marín Serna, con el fin de recibir asesoramiento sobre pensión de sobrevivientes, ya que cree posiblemente tener derecho a ella.";
+                } else if (index === 27) {
+                  title = "REGULACIÓN ALIMENTOS";
+                  description = "El día 18 de agosto de 2023 acude a las instalaciones de la organización de derechos humanos FUNDELIBERTAD el señor Eder Luis Rivera Geney, con el fin de recibir asesoramiento sobre regulación de alimentos, ya que no puede dar la cantidad que le exigen.";
+                } else if (index === 28) {
+                  title = "VULNERACIÒN DEL DERECHO AL BUEN NOMBRE Y AL TRABAJO";
+                  description = "El día 12 de agosto de 2023 acude a las instalaciones de la organización de derechos humanos FUNDELIBERTAD el señor Cruz Miguel Blanco Amaya, con el fin de recibir asesoramiento sobre las vulneraciones a sus derechos por parte de la empresa transportadora  a la cual está vinculado, como lo son al buen nombre y al trabajo.";
+                } else if (index === 29) {
+                  title = "REGULACIÓN ALIMENTOS";
+                  description = "El día 12 de agosto de 2023 acude a las instalaciones de la organización de derechos humanos FUNDELIBERTAD la señora Tania Katherine Mazo Duque, con el fin de recibir asesoramiento sobre regulación de alimentos, ya que su progenitor está incumpliendo con los deberes de su hijo.";
+                } else if (index === 30) {
+                  title = "LIQUIDACIÒN PRESTACIONES SOCIALES";
+                  description = "El día 15 de julio de 2023 acuden a la oficina de -FUNDELIBERTAD- los señores Saturnino Benito Chacin Vasquez, Duverney De Jesùs Zapata Zapata, Juan Carlos Gonzalez Idarraga y Emanuel Restrepo Suarez, para recibir asesoría sobre sus prestaciones sociales las cuales no les liquidaron en la empresa donde laboraban.";
+                } else if (index === 31) {
+                  title = "LIQUIDACIÒN PRESTACIONES SOCIALES";
+                  description = "El día 30 de junio de 2023 acude a la oficina de -FUNDELIBERTAD- el señor Neomar Eduardo Cadena Silveira, para recibir asesoría sobre sus prestaciones sociales la cual no le liquidaron en la empresa donde laboraba.";
+                } else if (index === 32) {
+                  title = "PENSIÒN SOBREVIVIENTES";
+                  description = "El pasado 25 de junio se acerca a las instalaciones de la organización de derechos humanos -FUNDELIBERTAD- el señor Danilo De Jesus Alvarez Gil, con el fin de recibir asesoría de una pensión de sobrevivientes que le fue negada a su hermana.";
+                } else if (index === 33) {
+                  title = "REGULACIÒN ALIMENTOS";
+                  description = "El día 31 de mayo de 2023 acude a las instalaciones de la organización de derechos humanos FUNDELIBERTAD la señora Daniela Patricia Rojas con el fin de recibir asesoramiento sobre regulación de alimentos, ya que su progenitor está incumpliendo con los deberes de su hijo.";
+                } else if (index === 34) {
+                  title = "DETENCIÓN PREVENTIVA";
+                  description = "El día 25 de mayo de 2023 acude a las instalaciones de la organización de derechos humanos FUNDALIBERTAD la señora Mercedes Basan con el fin de recibir asesoría sobre la operancia de las medidas de aseguramiento y su revocatoria.";
+                }
+
+                return (
+                  <div key={originalIndex} className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                      <div className="lg:col-span-2 space-y-3">
+                        <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest block">
+                          Asesoría Jurídica Gratuita
+                        </span>
+                        <h3 className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
+                          {title}
+                        </h3>
+                        <p className="text-xs text-slate-500 leading-relaxed">
+                          {description}
+                        </p>
+                      </div>
+                      
+                      <AdaptiveImage
+                        src={index === 2 ? "https://lh3.googleusercontent.com/d/1I-HrHiEfoKEZCSVZ4LWLYKRDHwlgXpWq" : index === 3 ? "https://lh3.googleusercontent.com/d/1Qdjmjr0XHZ5zPjjRCMPNhG8ckkyOfv3p" : index === 4 ? "https://lh3.googleusercontent.com/d/1chXF5yQIojGBCj8bL0L415VhAehgpmJv" : index === 5 ? "https://lh3.googleusercontent.com/d/1rweq5ANbhu5336VGZdfTsNR_Xlr0Egsz" : index === 6 ? "https://lh3.googleusercontent.com/d/1UuP1gcCr05VTQh9jE-Bj1CI3p7dF3TPs" : index === 7 ? "https://lh3.googleusercontent.com/d/1e60TTT-7lR0UdX9BS66Bax1ScKrQdcB0" : index === 8 ? "https://lh3.googleusercontent.com/d/12_zHhY0dc4_6woepQESb9xX5NK-4LwCO" : index === 9 ? "https://lh3.googleusercontent.com/d/1cS9GTFuI_qAjGgVQrH4vTkPrMVNriKH5" : index === 10 ? "https://lh3.googleusercontent.com/d/1IePS57YfgCt1yfaLi_taodp6Cm6zUiNF" : index === 11 ? "https://lh3.googleusercontent.com/d/1GNzz6_5WiN_w4pkpgKjn228UkuaILQ28" : index === 12 ? "https://lh3.googleusercontent.com/d/10Lhq2VcwB9wbx1m5V4TGNk0WD1zvEfWF" : index === 13 ? "https://lh3.googleusercontent.com/d/1ka__kkNNsQgGVCsRTViBvGfyBo6k-SN7" : index === 14 ? "https://lh3.googleusercontent.com/d/1TnbhG6ZoDn50Dy-urPOX6d4jcvBz7hQ-" : index === 15 ? "https://lh3.googleusercontent.com/d/1HR6oaevZT0_uPscXEqM8iKmn_uFzryIR" : index === 16 ? "https://lh3.googleusercontent.com/d/1HNeuF7dGnU31KaaEREdPUWJpZ3xGsmnp" : index === 17 ? "https://lh3.googleusercontent.com/d/1ypoioOQVhdtxvGfOWJF4VRJTV8PCHj6J" : index === 18 ? "https://lh3.googleusercontent.com/d/1CjhsUtXTYvzjkHCKIYdNXENFf346gPym" : index === 19 ? "https://lh3.googleusercontent.com/d/1kmHMnsqBcbaa9SkaZ1R_DtDVEXkgtRHg" : index === 20 ? "https://lh3.googleusercontent.com/d/18LuJcJsX3MBhHHgbjUP5DB1WDJJwmX34" : index === 21 ? "https://lh3.googleusercontent.com/d/1rweq5ANbhu5336VGZdfTsNR_Xlr0Egsz" : index === 22 ? "https://lh3.googleusercontent.com/d/1Sy2F_LkuhLzZxPw_Xuzdu0zUqM6-V46B" : index === 23 ? "https://lh3.googleusercontent.com/d/1DRT_-Kxyy8NUSZP0e0C2glri0CNC514n" : index === 24 ? "https://lh3.googleusercontent.com/d/1B1SwMeOAedBjqD3U7kcjl1pIpAqfjw0L" : index === 25 ? "https://lh3.googleusercontent.com/d/1XDe60bQmlffpr44LVfqALziIpEnqYbqd" : index === 26 ? "https://lh3.googleusercontent.com/d/1HR6oaevZT0_uPscXEqM8iKmn_uFzryIR" : index === 27 ? "https://lh3.googleusercontent.com/d/1we7MTYMCeG7gfjqvkcsVd_Dzb8fUHQNA" : index === 28 ? "https://lh3.googleusercontent.com/d/1Si1dej5PqaNkqYJHo1zsKyF-k3Eg80p2" : index === 29 ? "https://lh3.googleusercontent.com/d/1hMdndrr8Ac3_CYZT47XzAGE4Cb5ldZHa" : index === 30 ? "https://lh3.googleusercontent.com/d/1BNuwxDQ024uX_sOw1YID6DVX05MhPsXu" : index === 31 ? "https://lh3.googleusercontent.com/d/1p1fIBACH78v6WdfariP7v2ccP1r1Tu_5" : index === 32 ? "https://lh3.googleusercontent.com/d/184e5GVNDfBjVyymJKOQUbLUDdvsQABQ0" : index === 33 ? "https://lh3.googleusercontent.com/d/1TuJyliS-G99TYaulPRTT0D0-DdBmvRmp" : index === 34 ? "https://lh3.googleusercontent.com/d/16f_m6vBT_ctYTBEA7kBvsfQwx8baqeHr" : legalImg}
+                        alt="Consultorio jurídico FUNDELIBERTAD"
+                        containerClassName="lg:col-span-1 h-64 lg:h-80 rounded-xl overflow-hidden bg-white border border-slate-200/80"
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* Informative Block instead of form */}
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
+                <h4 className="font-display font-bold text-base text-slate-900 border-l-2 border-emerald-600 pl-2.5">
+                  ¿Cómo solicitar una Asesoría Jurídica Gratuita?
+                </h4>
+
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Si necesitas asesoramiento en Derecho Constitucional (tutelas y derechos de petición), Derecho de Familia, Laboral, Civil o apoyo psicosocial, nuestro equipo de consultorio jurídico comunitario está listo para orientarte sin ningún costo:
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-5 bg-emerald-50/50 rounded-xl border border-emerald-100 space-y-2">
+                    <h5 className="font-bold text-xs text-emerald-900 flex items-center gap-1.5">
+                      <Phone className="w-4.5 h-4.5 text-emerald-600" />
+                      Consulta por WhatsApp
+                    </h5>
+                    <p className="text-[11px] text-slate-600 leading-normal">
+                      La forma más rápida de recibir asesoría. Describe brevemente tu caso para asignarte un abogado comunitario:
+                    </p>
+                    <a href="https://wa.me/573002167822?text=Hola%20FUNDELIBERTAD%2C%20necesito%20solicitar%20una%20asesor%C3%ADa%20jur%C3%ADdica%20gratuita." target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-emerald-700 hover:underline block pt-1">
+                      +57 300 216 7822
+                    </a>
+                  </div>
+
+                  <div className="p-5 bg-blue-50/50 rounded-xl border border-blue-100 space-y-2">
+                    <h5 className="font-bold text-xs text-blue-900 flex items-center gap-1.5">
+                      <Mail className="w-4.5 h-4.5 text-blue-600" />
+                      Correo Electrónico
+                    </h5>
+                    <p className="text-[11px] text-slate-600 leading-normal">
+                      Envía copias de tus documentos, notificaciones recibidas o expedientes para un análisis técnico formal:
+                    </p>
+                    <a href="mailto:info@fundelibertad.org" className="text-xs font-mono font-bold text-blue-700 hover:underline block pt-1">
+                      info@fundelibertad.org
+                    </a>
+                  </div>
+                </div>
+
+
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}

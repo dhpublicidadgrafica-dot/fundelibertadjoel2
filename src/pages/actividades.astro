@@ -1,0 +1,48 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ActivitiesSection, { type WPActivityItem } from '../components/sections/ActivitiesSection';
+import { getPosts, getFeaturedImageUrl, getPostCategories, hasValidCategory } from '../lib/wordpress';
+
+// Obtener todas las entradas publicadas en WordPress
+const allWpPosts = await getPosts(50);
+
+// REGLA: Entrada que no tenga categorías no mostrarla en ningún lado.
+// En Actividades solo van las entradas que tengan categorías válidas y NO sean de Proyectos.
+const wpPosts = allWpPosts.filter((post) => {
+  if (!hasValidCategory(post)) return false;
+  const cats = getPostCategories(post);
+  const isProject = cats.some(c => c.toLowerCase().includes('proyecto'));
+  return !isProject;
+});
+
+const mappedActivities: WPActivityItem[] = wpPosts.map((post) => {
+  const cats = getPostCategories(post);
+  const featuredImg = getFeaturedImageUrl(post, 'https://lh3.googleusercontent.com/d/1mzMGHUgDdHcX8hpf8DTMLIs2Dv53CCsd');
+  const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+
+  const specificCat = cats.find(c => c.toLowerCase() !== 'actividades') || cats[0] || 'Actividades';
+
+  return {
+    id: `wp-${post.id}`,
+    title: post.title.rendered,
+    category: specificCat,
+    categories: cats,
+    description: post.excerpt.rendered.replace(/<[^>]*>?/gm, '').trim(),
+    content: post.content.rendered,
+    image: featuredImg,
+    slug: post.slug,
+    date: dateStr,
+  };
+});
+---
+
+<Layout
+  title="Actividades y Eventos | FUNDELIBERTAD"
+  description="Jornadas de atención, foros, talleres comunitarios y eventos de integración ciudadana."
+>
+  <ActivitiesSection client:load wpActivities={mappedActivities} />
+</Layout>

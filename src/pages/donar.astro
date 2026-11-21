@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HomeSection from '../components/sections/HomeSection';
+---
+
+<Layout
+  title="Donar a FUNDELIBERTAD | Canal Oficial de Donaciones"
+  description="Canal oficial para realizar aportes y donaciones a la Fundación de Derechos Humanos por la Libertad y la Vida."
+>
+  <HomeSection client:load />
+</Layout>
+
+<script is:inline>
+  // Abrir automáticamente el modal al cargar la ruta /donar
+  window.addEventListener('DOMContentLoaded', () => {
+    window.dispatchEvent(new CustomEvent('open-donation-modal'));
+  });
+</script>

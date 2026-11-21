@@ -1,0 +1,48 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ProjectsSection from '../components/sections/ProjectsSection';
+import { getPosts, getFeaturedImageUrl, getPostCategories, hasValidCategory } from '../lib/wordpress';
+import type { WPActivityItem } from '../components/sections/ActivitiesSection';
+
+// Obtener todas las entradas publicadas en WordPress
+const allWpPosts = await getPosts(50);
+
+// REGLA: Entrada que no tenga categorías no mostrarla en ningún lado.
+// En Proyectos solo van las que tengan explícitamente categoría de proyectos.
+const wpProjectPosts = allWpPosts.filter((post) => {
+  if (!hasValidCategory(post)) return false;
+  const cats = getPostCategories(post);
+  return cats.some(c => c.toLowerCase().includes('proyecto'));
+});
+
+const mappedWpProjects: WPActivityItem[] = wpProjectPosts.map((post) => {
+  const cats = getPostCategories(post);
+  const featuredImg = getFeaturedImageUrl(post, 'https://lh3.googleusercontent.com/d/11y3-Zw7P020zrMq6cakM0RrvsjrFlzW5');
+  const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+
+  const specificCat = cats.find(c => c.toLowerCase() !== 'proyectos') || cats[0] || 'Proyectos';
+
+  return {
+    id: `wp-${post.id}`,
+    title: post.title.rendered,
+    category: specificCat,
+    categories: cats,
+    description: post.excerpt.rendered.replace(/<[^>]*>?/gm, '').trim(),
+    content: post.content.rendered,
+    image: featuredImg,
+    slug: post.slug,
+    date: dateStr,
+  };
+});
+---
+
+<Layout
+  title="Proyectos Sociales | FUNDELIBERTAD"
+  description="Iniciativas de alto impacto social, derechos humanos y convivencia ciudadana en Medellín y Antioquia."
+>
+  <ProjectsSection client:load wpProjects={mappedWpProjects} />
+</Layout>
