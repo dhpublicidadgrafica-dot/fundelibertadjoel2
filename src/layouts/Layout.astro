@@ -48,6 +48,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://fundelib
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={image} />
 
+    <!-- Performance Resource Hints -->
+    <link rel="dns-prefetch" href="https://lh3.googleusercontent.com" />
+    <link rel="preconnect" href="https://lh3.googleusercontent.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.csm.fundelibertad.org" />
+    <link rel="preconnect" href="https://www.csm.fundelibertad.org" crossorigin />
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

@@ -9,7 +9,6 @@ import { Heart, Scale, Users, ShieldAlert, ArrowRight, MessageSquare, Award, Pla
 import { IMPACT_STATS, SERVICES_LIST, TESTIMONIALS, LATEST_ACTIVITIES } from '../../data';
 import Logo from '../Logo';
 
-import heroImageSrc from '../../assets/images/fundelibertad_hero_1782489663346.jpg';
 import pasantiasImageSrc from '../../assets/images/pasantias_students_1782495066851.jpg';
 import denunciasImageSrc from '../../assets/images/denuncias_documento_handover_1782495219494.jpg';
 import asesoriasImageSrc from '../../assets/images/asesorias_legales_consultation_1782495362476.jpg';
