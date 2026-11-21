@@ -38,7 +38,7 @@ const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
 >
   <article class="py-12">
     {/* Header Article */}
-    <header class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 text-center">
+    <header class="max-w-4xl mx-auto space-y-6 text-center">
       {categories.length > 0 && (
         <div class="flex items-center justify-center gap-2">
           {categories.map((cat) => (
@@ -68,12 +68,12 @@ const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
 
     {/* Featured Image */}
     {featuredImg && (
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 my-8 flex justify-center">
-        <div class="w-full rounded-3xl overflow-hidden shadow-lg border border-slate-200 bg-slate-50 flex items-center justify-center">
+      <div class="w-full max-w-5xl mx-auto my-10 flex justify-center">
+        <div class="w-full rounded-3xl overflow-hidden shadow-2xl border border-slate-200 bg-slate-900 aspect-video max-h-[560px] flex items-center justify-center">
           <img
             src={featuredImg}
             alt={post.title.rendered}
-            class="w-full max-h-[480px] object-cover object-center rounded-3xl mx-auto"
+            class="w-full h-full object-cover object-center"
             loading="eager"
           />
         </div>
@@ -81,7 +81,7 @@ const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
     )}
 
     {/* Article Content */}
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
       <div
         class="wp-content bg-white p-6 sm:p-12 rounded-3xl shadow-xs border border-slate-100 text-slate-700 leading-relaxed text-base space-y-6"
         set:html={post.content.rendered}
