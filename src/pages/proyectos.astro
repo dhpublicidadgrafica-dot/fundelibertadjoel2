@@ -7,8 +7,19 @@ import type { WPActivityItem } from '../components/sections/ActivitiesSection';
 // Obtener todas las entradas publicadas en WordPress
 const allWpPosts = await getPosts(50);
 
-// REGLA: Entrada que no tenga categorías no mostrarla en ningún lado.
-// En Proyectos solo van las que tengan explícitamente categoría de proyectos.
+const isNonProjectCategory = (catName: string): boolean => {
+  if (!catName) return true;
+  const lower = catName.toLowerCase().trim();
+  if (lower === 'uncategorized' || lower === 'sin categoría' || lower === 'sin categoria') return true;
+  if (lower === 'actividades' || lower === 'actividad') return true;
+  if (lower.includes('denuncia') || lower.includes('informe')) return true;
+  if (lower.includes('asesoria') || lower.includes('asesoría')) return true;
+  if (lower.includes('pasantia') || lower.includes('pasantía') || lower.includes('práctica') || lower.includes('practica')) return true;
+  return false;
+};
+
+// REGLA: En Proyectos solo van las entradas que pertenezcan a la categoría de proyectos
+// y solo deben mostrarse las categorías propias de las entradas de proyectos.
 const wpProjectPosts = allWpPosts.filter((post) => {
   if (!hasValidCategory(post)) return false;
   const cats = getPostCategories(post);
@@ -16,7 +27,9 @@ const wpProjectPosts = allWpPosts.filter((post) => {
 });
 
 const mappedWpProjects: WPActivityItem[] = wpProjectPosts.map((post) => {
-  const cats = getPostCategories(post);
+  const allCats = getPostCategories(post);
+  const projectCats = allCats.filter(c => !isNonProjectCategory(c));
+  const validCats = projectCats.length > 0 ? projectCats : ['Proyectos'];
   const featuredImg = getFeaturedImageUrl(post, 'https://lh3.googleusercontent.com/d/11y3-Zw7P020zrMq6cakM0RrvsjrFlzW5');
   const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
     year: 'numeric',
@@ -24,13 +37,13 @@ const mappedWpProjects: WPActivityItem[] = wpProjectPosts.map((post) => {
     day: 'numeric'
   });
 
-  const specificCat = cats.find(c => c.toLowerCase() !== 'proyectos') || cats[0] || 'Proyectos';
+  const specificCat = validCats.find(c => c.toLowerCase() !== 'proyectos') || validCats[0] || 'Proyectos';
 
   return {
     id: `wp-${post.id}`,
     title: post.title.rendered,
     category: specificCat,
-    categories: cats,
+    categories: validCats,
     description: post.excerpt.rendered.replace(/<[^>]*>?/gm, '').trim(),
     content: post.content.rendered,
     image: featuredImg,

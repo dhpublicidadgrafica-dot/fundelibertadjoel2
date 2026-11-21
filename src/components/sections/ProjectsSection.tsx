@@ -31,6 +31,17 @@ const getWordExcerpt = (textOrHtml: string, maxWords: number = 50): string => {
   return words.slice(0, maxWords).join(' ') + '...';
 };
 
+const isNonProjectCategory = (catName: string): boolean => {
+  if (!catName) return true;
+  const lower = catName.toLowerCase().trim();
+  if (lower === 'uncategorized' || lower === 'sin categoría' || lower === 'sin categoria') return true;
+  if (lower === 'actividades' || lower === 'actividad') return true;
+  if (lower.includes('denuncia') || lower.includes('informe')) return true;
+  if (lower.includes('asesoria') || lower.includes('asesoría')) return true;
+  if (lower.includes('pasantia') || lower.includes('pasantía') || lower.includes('práctica') || lower.includes('practica')) return true;
+  return false;
+};
+
 interface ProjectsSectionProps {
   wpProjects?: WPActivityItem[];
 }
@@ -89,8 +100,9 @@ export default function ProjectsSection({ wpProjects = [] }: ProjectsSectionProp
 
         const mapped: WPActivityItem[] = projectPosts.map((post: any) => {
           const terms: any[] = post._embedded?.['wp:term']?.[0] || [];
-          const catNames = terms.map(t => t.name).filter(c => c.toLowerCase() !== 'uncategorized' && c.toLowerCase() !== 'sin categoría');
-          const specificCat = catNames.find(c => c.toLowerCase() !== 'proyectos') || catNames[0] || 'Proyectos';
+          const catNames = terms.map(t => t.name).filter(c => !isNonProjectCategory(c));
+          const validCats = catNames.length > 0 ? catNames : ['Proyectos'];
+          const specificCat = validCats.find(c => c.toLowerCase() !== 'proyectos') || validCats[0] || 'Proyectos';
           const media = post._embedded?.['wp:featuredmedia']?.[0];
           const featuredImg = media?.source_url || media?.media_details?.sizes?.large?.source_url || 'https://lh3.googleusercontent.com/d/11y3-Zw7P020zrMq6cakM0RrvsjrFlzW5';
           const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
@@ -103,7 +115,7 @@ export default function ProjectsSection({ wpProjects = [] }: ProjectsSectionProp
             id: `wp-${post.id}`,
             title: post.title.rendered,
             category: specificCat,
-            categories: catNames.length > 0 ? catNames : ['Proyectos'],
+            categories: validCats,
             description: post.excerpt.rendered.replace(/<[^>]*>?/gm, '').trim(),
             content: post.content.rendered,
             image: featuredImg,
@@ -147,17 +159,15 @@ export default function ProjectsSection({ wpProjects = [] }: ProjectsSectionProp
     return [...projects, ...remainingDefaults];
   }, [projects, defaultProjects]);
 
-  // Extraer dinámicamente todas las categorías presentes
+  // Extraer dinámicamente solo las categorías propias de las entradas de proyectos
   const availableCategories = useMemo(() => {
     const catsSet = new Set<string>();
     projectsList.forEach((proj) => {
-      if (proj.categories && Array.isArray(proj.categories) && proj.categories.length > 0) {
-        proj.categories.forEach((c) => {
-          if (c && c.trim()) catsSet.add(c.trim());
-        });
-      } else if (proj.category && proj.category.trim()) {
-        catsSet.add(proj.category.trim());
-      }
+      const cats = (proj.categories && proj.categories.length > 0 ? proj.categories : [proj.category])
+        .filter(c => c && c.trim() && !isNonProjectCategory(c));
+      cats.forEach((c) => {
+        catsSet.add(c.trim());
+      });
     });
     return Array.from(catsSet);
   }, [projectsList]);
