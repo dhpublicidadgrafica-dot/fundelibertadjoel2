@@ -6,13 +6,11 @@ import { getPosts, getFeaturedImageUrl, getPostCategories, hasValidCategory } fr
 // Obtener todas las entradas publicadas en WordPress
 const allWpPosts = await getPosts(50);
 
-// REGLA: Entrada que no tenga categorías no mostrarla en ningún lado.
-// En Actividades solo van las entradas que tengan categorías válidas y NO sean de Proyectos.
+// REGLA: En Actividades solo van las entradas que pertenezcan a la categoría de actividades.
 const wpPosts = allWpPosts.filter((post) => {
   if (!hasValidCategory(post)) return false;
   const cats = getPostCategories(post);
-  const isProject = cats.some(c => c.toLowerCase().includes('proyecto'));
-  return !isProject;
+  return cats.some(c => c.toLowerCase().includes('actividad'));
 });
 
 const mappedActivities: WPActivityItem[] = wpPosts.map((post) => {

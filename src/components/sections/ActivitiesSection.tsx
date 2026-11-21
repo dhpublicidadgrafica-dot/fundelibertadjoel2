@@ -92,8 +92,13 @@ export default function ActivitiesSection({ wpActivities = [] }: ActivitiesSecti
             return name !== 'uncategorized' && name !== 'sin categoría' && slug !== 'uncategorized';
           });
           if (validTerms.length === 0) return false;
-          const isProject = validTerms.some((t: any) => t.name.toLowerCase().includes('proyecto') || t.slug.toLowerCase().includes('proyecto'));
-          return !isProject;
+          // REGLA: En la página de actividades solo deben ir las entradas de la categoría de actividades
+          const isActivity = validTerms.some((t: any) => {
+            const name = (t.name || '').toLowerCase();
+            const slug = (t.slug || '').toLowerCase();
+            return name.includes('actividad') || slug.includes('actividad');
+          });
+          return isActivity;
         });
 
         const mapped: WPActivityItem[] = filteredPosts.map((post: any) => {
