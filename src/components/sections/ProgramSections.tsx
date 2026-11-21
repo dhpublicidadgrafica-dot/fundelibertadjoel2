@@ -20,6 +20,7 @@ import { url } from '../../lib/base';
 interface ProgramSectionsProps {
   initialSubsection?: string;
   initialInternshipPosts?: WPActivityItem[];
+  initialReportsPosts?: WPActivityItem[];
 }
 
 const SUBSECTION_MAP: Record<string, string> = {
@@ -63,30 +64,36 @@ const getWordExcerpt = (textOrHtml: string, maxWords: number = 50): string => {
   return words.slice(0, maxWords).join(' ') + '...';
 };
 
-export default function ProgramSections({ initialSubsection = 'internships', initialInternshipPosts = [] }: ProgramSectionsProps) {
+export default function ProgramSections({ 
+  initialSubsection = 'internships', 
+  initialInternshipPosts = [],
+  initialReportsPosts = []
+}: ProgramSectionsProps) {
   const resolveTab = () => {
     return SUBSECTION_MAP[initialSubsection] || initialSubsection;
   };
 
   const [activeTab, setActiveTab] = useState<string>(resolveTab());
   const [internshipPosts, setInternshipPosts] = useState<WPActivityItem[]>(initialInternshipPosts);
+  const [reportsPosts, setReportsPosts] = useState<WPActivityItem[]>(initialReportsPosts);
 
   useEffect(() => {
     setActiveTab(SUBSECTION_MAP[initialSubsection] || initialSubsection);
   }, [initialSubsection]);
 
-  // Sincronización en vivo desde WordPress para Prácticas y Pasantías
+  // Sincronización en vivo desde WordPress para Prácticas y Pasantías e Informes/Denuncias
   useEffect(() => {
     let isMounted = true;
 
-    const fetchLiveInternshipPosts = async () => {
+    const fetchLivePosts = async () => {
       try {
         const res = await fetch('https://www.csm.fundelibertad.org/wp-json/wp/v2/posts?_embed=1&per_page=50');
         if (!res.ok) return;
         const rawPosts = await res.json();
         if (!Array.isArray(rawPosts) || !isMounted) return;
 
-        const matching = rawPosts.filter((post: any) => {
+        // 1. Filtrar Prácticas y Pasantías
+        const matchingInternships = rawPosts.filter((post: any) => {
           if (post.slug === 'hello-world' || post.id === 1) return false;
           const terms: any[] = post._embedded?.['wp:term']?.[0] || [];
           const validTerms = terms.filter((t: any) => {
@@ -104,9 +111,29 @@ export default function ProgramSections({ initialSubsection = 'internships', ini
           });
         });
 
-        const mapped: WPActivityItem[] = matching.map((post: any) => {
+        // 2. Filtrar Informes y Denuncias de DDHH
+        const matchingReports = rawPosts.filter((post: any) => {
+          if (post.slug === 'hello-world' || post.id === 1) return false;
           const terms: any[] = post._embedded?.['wp:term']?.[0] || [];
-          const catNames = terms.map(t => t.name).filter(c => c.toLowerCase() !== 'uncategorized' && c.toLowerCase() !== 'sin categoría');
+          const validTerms = terms.filter((t: any) => {
+            const name = (t.name || '').toLowerCase();
+            const slug = (t.slug || '').toLowerCase();
+            return name !== 'uncategorized' && name !== 'sin categoría' && slug !== 'uncategorized';
+          });
+          if (validTerms.length === 0) return false;
+          return validTerms.some((t: any) => {
+            const n = (t.name || '').toLowerCase();
+            const s = (t.slug || '').toLowerCase();
+            return n.includes('informe') || n.includes('denuncia') || 
+                   n.includes('ddhh') || n.includes('derecho') ||
+                   s.includes('informe') || s.includes('denuncia') ||
+                   s.includes('ddhh') || s.includes('derecho');
+          });
+        });
+
+        const mapPost = (post: any, defaultCat: string) => {
+          const terms: any[] = post._embedded?.['wp:term']?.[0] || [];
+          const catNames = terms.map((t: any) => t.name).filter((c: string) => c.toLowerCase() !== 'uncategorized' && c.toLowerCase() !== 'sin categoría');
           const media = post._embedded?.['wp:featuredmedia']?.[0];
           const featuredImg = media?.source_url || media?.media_details?.sizes?.large?.source_url || 'https://lh3.googleusercontent.com/d/1VOAa3Fwpv9QvlaDHN7PP8mWY-jYImtzN';
           const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
@@ -118,7 +145,7 @@ export default function ProgramSections({ initialSubsection = 'internships', ini
           return {
             id: `wp-${post.id}`,
             title: post.title.rendered,
-            category: catNames[0] || 'Prácticas y Pasantías',
+            category: catNames[0] || defaultCat,
             categories: catNames,
             description: post.excerpt.rendered.replace(/<[^>]*>?/gm, '').trim(),
             content: post.content.rendered,
@@ -126,21 +153,26 @@ export default function ProgramSections({ initialSubsection = 'internships', ini
             slug: post.slug,
             date: dateStr,
           };
-        });
+        };
 
-        if (isMounted && mapped.length > 0) {
-          setInternshipPosts(mapped);
+        if (isMounted) {
+          if (matchingInternships.length > 0) {
+            setInternshipPosts(matchingInternships.map(p => mapPost(p, 'Prácticas y Pasantías')));
+          }
+          if (matchingReports.length > 0) {
+            setReportsPosts(matchingReports.map(p => mapPost(p, 'Informes y Denuncias de DDHH')));
+          }
         }
       } catch (err) {
-        console.error('Error sincronizando Prácticas y Pasantías:', err);
+        console.error('Error sincronizando programas desde WordPress:', err);
       }
     };
 
-    fetchLiveInternshipPosts();
-    window.addEventListener('focus', fetchLiveInternshipPosts);
+    fetchLivePosts();
+    window.addEventListener('focus', fetchLivePosts);
     return () => {
       isMounted = false;
-      window.removeEventListener('focus', fetchLiveInternshipPosts);
+      window.removeEventListener('focus', fetchLivePosts);
     };
   }, []);
 
@@ -415,8 +447,62 @@ export default function ProgramSections({ initialSubsection = 'internships', ini
               id="reports-panel"
               key="reports"
             >
-              {/* 26 Duplicated Denuncias Cards */}
-              {Array.from({ length: 26 }).map((_, index) => {
+              {/* Dynamic WordPress cards for "Informes y Denuncias de DDHH" */}
+              {reportsPosts.length > 0 ? (
+                reportsPosts.map((post) => (
+                  <div key={post.id} className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                      <div className="space-y-4">
+                        <span className="text-[10px] font-bold text-amber-700 uppercase tracking-widest block">
+                          {post.category || 'Informes y Denuncias de DDHH'}
+                        </span>
+                        <a 
+                          href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
+                          className="block hover:text-amber-800 transition-colors"
+                        >
+                          <h3 
+                            className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight hover:text-amber-800 transition-colors"
+                            dangerouslySetInnerHTML={{ __html: post.title }}
+                          />
+                        </a>
+                        <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
+                          <p>
+                            {getWordExcerpt(post.content || post.description, 50)}
+                          </p>
+                        </div>
+
+                        {post.slug && (
+                          <div className="pt-2">
+                            <a
+                              href={url(`/blog/${post.slug}`)}
+                              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm hover:shadow transition-all duration-200 group/btn w-fit cursor-pointer"
+                              id={`btn-read-more-${post.id}`}
+                            >
+                              <span>Leer más</span>
+                              <ChevronRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {post.image && (
+                        <a 
+                          href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
+                          className="block group/img cursor-pointer"
+                        >
+                          <AdaptiveImage
+                            src={post.image}
+                            alt={post.title}
+                            containerClassName="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-white border border-slate-200/80 group-hover/img:opacity-95 transition-opacity"
+                          />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                /* 26 Duplicated Denuncias Cards */
+                Array.from({ length: 26 }).map((_, index) => {
                 const isCaso2 = index === 1;
                 const isCaso3 = index === 2;
                 const isCaso4 = index === 3;
@@ -907,7 +993,7 @@ export default function ProgramSections({ initialSubsection = 'internships', ini
                     </div>
                   </div>
                 );
-              })}
+              }))}
 
               {/* Informative Block instead of form */}
               <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
