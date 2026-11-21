@@ -14,9 +14,12 @@ import internshipImg from '../../assets/images/fundelibertad_internship_17824896
 import reportsImg from '../../assets/images/fundelibertad_reports_1782489690540.jpg';
 import legalImg from '../../assets/images/fundelibertad_legal_1782489703836.jpg';
 import AdaptiveImage from '../AdaptiveImage';
+import type { WPActivityItem } from './ActivitiesSection';
+import { url } from '../../lib/base';
 
 interface ProgramSectionsProps {
   initialSubsection?: string;
+  initialInternshipPosts?: WPActivityItem[];
 }
 
 const SUBSECTION_MAP: Record<string, string> = {
@@ -40,21 +43,91 @@ const TAB_URL_MAP: Record<string, string> = {
   'legal': '/programas/asesoria-juridica-comunitaria',
 };
 
-export default function ProgramSections({ initialSubsection = 'internships' }: ProgramSectionsProps) {
+export default function ProgramSections({ initialSubsection = 'internships', initialInternshipPosts = [] }: ProgramSectionsProps) {
   const resolveTab = () => {
     return SUBSECTION_MAP[initialSubsection] || initialSubsection;
   };
 
   const [activeTab, setActiveTab] = useState<string>(resolveTab());
+  const [internshipPosts, setInternshipPosts] = useState<WPActivityItem[]>(initialInternshipPosts);
 
   useEffect(() => {
     setActiveTab(SUBSECTION_MAP[initialSubsection] || initialSubsection);
   }, [initialSubsection]);
 
+  // Sincronización en vivo desde WordPress para Prácticas y Pasantías
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchLiveInternshipPosts = async () => {
+      try {
+        const res = await fetch('https://www.csm.fundelibertad.org/wp-json/wp/v2/posts?_embed=1&per_page=50');
+        if (!res.ok) return;
+        const rawPosts = await res.json();
+        if (!Array.isArray(rawPosts) || !isMounted) return;
+
+        const matching = rawPosts.filter((post: any) => {
+          if (post.slug === 'hello-world' || post.id === 1) return false;
+          const terms: any[] = post._embedded?.['wp:term']?.[0] || [];
+          const validTerms = terms.filter((t: any) => {
+            const name = (t.name || '').toLowerCase();
+            const slug = (t.slug || '').toLowerCase();
+            return name !== 'uncategorized' && name !== 'sin categoría' && slug !== 'uncategorized';
+          });
+          if (validTerms.length === 0) return false;
+          return validTerms.some((t: any) => {
+            const n = (t.name || '').toLowerCase();
+            const s = (t.slug || '').toLowerCase();
+            return n.includes('practica') || n.includes('práctica') || 
+                   n.includes('pasantia') || n.includes('pasantía') ||
+                   s.includes('practica') || s.includes('pasantia');
+          });
+        });
+
+        const mapped: WPActivityItem[] = matching.map((post: any) => {
+          const terms: any[] = post._embedded?.['wp:term']?.[0] || [];
+          const catNames = terms.map(t => t.name).filter(c => c.toLowerCase() !== 'uncategorized' && c.toLowerCase() !== 'sin categoría');
+          const media = post._embedded?.['wp:featuredmedia']?.[0];
+          const featuredImg = media?.source_url || media?.media_details?.sizes?.large?.source_url || 'https://lh3.googleusercontent.com/d/1VOAa3Fwpv9QvlaDHN7PP8mWY-jYImtzN';
+          const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+          });
+
+          return {
+            id: `wp-${post.id}`,
+            title: post.title.rendered,
+            category: catNames[0] || 'Prácticas y Pasantías',
+            categories: catNames,
+            description: post.excerpt.rendered.replace(/<[^>]*>?/gm, '').trim(),
+            content: post.content.rendered,
+            image: featuredImg,
+            slug: post.slug,
+            date: dateStr,
+          };
+        });
+
+        if (isMounted && mapped.length > 0) {
+          setInternshipPosts(mapped);
+        }
+      } catch (err) {
+        console.error('Error sincronizando Prácticas y Pasantías:', err);
+      }
+    };
+
+    fetchLiveInternshipPosts();
+    window.addEventListener('focus', fetchLiveInternshipPosts);
+    return () => {
+      isMounted = false;
+      window.removeEventListener('focus', fetchLiveInternshipPosts);
+    };
+  }, []);
+
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
     if (TAB_URL_MAP[tab] && typeof window !== 'undefined') {
-      window.location.href = TAB_URL_MAP[tab];
+      window.location.href = url(TAB_URL_MAP[tab]);
     }
   };
 
@@ -144,65 +217,98 @@ export default function ProgramSections({ initialSubsection = 'internships' }: P
               id="internships-panel"
               key="internships"
             >
-              {/* Introduction card */}
-              <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                  <div className="space-y-3">
-                    <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block">Prácticas Universitarias</span>
-                    <h3 className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
-                      Fortalece tu Vocación en el Territorio
-                    </h3>
-                    <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
-                      <p>
-                        La organización está en la busqueda de personas idóneas, para que aporten sus conocimiemtos e ideas, con el fin de apoyar a quienes se encuentran bajo el mandato de protección de FUNDELIBERTAD.
-                      </p>
-                      <p>
-                        El programa de pasantías/prácticas de FUNDELIBERTAD es una oportunidad para estudiantes de bachillerato y recién graduados de adquirir experiencia, acorde con su programa académico o con su trabajo próximo en alguno de los ámbitos que se hallen relacionados con la misión de FUNDELIBERTAD.
-                      </p>
-                      <p>
-                        Animamos a participar a todas aquellas personas cualificadas, sin distinción de raza, color, sexo, nacionalidad, edad, religión y discapacidad.
-                      </p>
-                      <div className="pt-3 border-t border-slate-100">
-                        <span className="font-bold text-[10px] uppercase tracking-wider text-slate-700 block mb-1">FINALIDAD</span>
-                        <p className="mb-2">Los objetivos son los siguientes:</p>
-                        <ul className="list-disc pl-4 space-y-1.5">
-                          <li>Principalmente, brindar la oportunidad de ganar experiencia laboral relacionada con sus estudios académicos o futuras oportunidades de trabajo en áreas vinculadas con el mandato de FUNDELIBERTAD.</li>
-                          <li>En segundo lugar, permitir que FUNDELIBERTAD se beneficie de la labor de los pasantes.</li>
-                        </ul>
+              {/* Dynamic WordPress cards for "Prácticas y Pasantías" */}
+              {internshipPosts.length > 0 ? (
+                internshipPosts.map((post) => (
+                  <div key={post.id} className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                      <div className="space-y-3">
+                        <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block">
+                          {post.category || 'Prácticas Universitarias'}
+                        </span>
+                        <h3 
+                          className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight"
+                          dangerouslySetInnerHTML={{ __html: post.title }}
+                        />
+                        <div 
+                          className="text-xs text-slate-500 space-y-3 leading-relaxed wp-content"
+                          dangerouslySetInnerHTML={{ __html: post.content || post.description }}
+                        />
                       </div>
+                      
+                      {post.image && (
+                        <AdaptiveImage
+                          src={post.image}
+                          alt={post.title}
+                          containerClassName="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-white border border-slate-200/80"
+                        />
+                      )}
                     </div>
                   </div>
-                  
-                  <AdaptiveImage
-                    src="https://lh3.googleusercontent.com/d/1VOAa3Fwpv9QvlaDHN7PP8mWY-jYImtzN"
-                    alt="Prácticas universitarias FUNDELIBERTAD"
-                    containerClassName="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-white border border-slate-200/80"
-                  />
-                </div>
-              </div>
+                ))
+              ) : (
+                <>
+                  {/* Introduction card */}
+                  <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                      <div className="space-y-3">
+                        <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block">Prácticas Universitarias</span>
+                        <h3 className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
+                          Fortalece tu Vocación en el Territorio
+                        </h3>
+                        <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
+                          <p>
+                            La organización está en la busqueda de personas idóneas, para que aporten sus conocimiemtos e ideas, con el fin de apoyar a quienes se encuentran bajo el mandato de protección de FUNDELIBERTAD.
+                          </p>
+                          <p>
+                            El programa de pasantías/prácticas de FUNDELIBERTAD es una oportunidad para estudiantes de bachillerato y recién graduados de adquirir experiencia, acorde con su programa académico o con su trabajo próximo en alguno de los ámbitos que se hallen relacionados con la misión de FUNDELIBERTAD.
+                          </p>
+                          <p>
+                            Animamos a participar a todas aquellas personas cualificadas, sin distinción de raza, color, sexo, nacionalidad, edad, religión y discapacidad.
+                          </p>
+                          <div className="pt-3 border-t border-slate-100">
+                            <span className="font-bold text-[10px] uppercase tracking-wider text-slate-700 block mb-1">FINALIDAD</span>
+                            <p className="mb-2">Los objetivos son los siguientes:</p>
+                            <ul className="list-disc pl-4 space-y-1.5">
+                              <li>Principalmente, brindar la oportunidad de ganar experiencia laboral relacionada con sus estudios académicos o futuras oportunidades de trabajo en áreas vinculadas con el mandato de FUNDELIBERTAD.</li>
+                              <li>En segundo lugar, permitir que FUNDELIBERTAD se beneficie de la labor de los pasantes.</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <AdaptiveImage
+                        src="https://lh3.googleusercontent.com/d/1VOAa3Fwpv9QvlaDHN7PP8mWY-jYImtzN"
+                        alt="Prácticas universitarias FUNDELIBERTAD"
+                        containerClassName="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-white border border-slate-200/80"
+                      />
+                    </div>
+                  </div>
 
-              {/* Highlight Intern card */}
-              <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                  <div className="space-y-3">
-                    <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block">Pasante</span>
-                    <h3 className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
-                      Fabian Alejandro Areiza Valencia
-                    </h3>
-                    <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
-                      <p>
-                        Fabian Alejandro Areiza Valencia, estudiante del Servicio Nacional de Aprendizaje-SENA en el programa de Tecnología en Contabilidad y Finanzas, realiza las pasantías en FUNDELIBERTAD desde el día 5 de abril de 2021 hasta el 20 de agosto de 2021, para poder recibir su grado.
-                      </p>
+                  {/* Highlight Intern card */}
+                  <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                      <div className="space-y-3">
+                        <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block">Pasante</span>
+                        <h3 className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
+                          Fabian Alejandro Areiza Valencia
+                        </h3>
+                        <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
+                          <p>
+                            Fabian Alejandro Areiza Valencia, estudiante del Servicio Nacional de Aprendizaje-SENA en el programa de Tecnología en Contabilidad y Finanzas, realiza las pasantías en FUNDELIBERTAD desde el día 5 de abril de 2021 hasta el 20 de agosto de 2021, para poder recibir su grado.
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <AdaptiveImage
+                        src="https://lh3.googleusercontent.com/d/1EvbiisDrvz4JgZf3o388N7PeKMP5dxKP"
+                        alt="Pasantías en Contabilidad y Finanzas - SENA"
+                        containerClassName="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-white border border-slate-200/80"
+                      />
                     </div>
                   </div>
-                  
-                  <AdaptiveImage
-                    src="https://lh3.googleusercontent.com/d/1EvbiisDrvz4JgZf3o388N7PeKMP5dxKP"
-                    alt="Pasantías en Contabilidad y Finanzas - SENA"
-                    containerClassName="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-white border border-slate-200/80"
-                  />
-                </div>
-              </div>
+                </>
+              )}
 
               {/* Informative Block instead of form */}
               <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">

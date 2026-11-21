@@ -1,11 +1,51 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ProgramSections from '../../components/sections/ProgramSections';
+import { getPosts, getFeaturedImageUrl, getPostCategories, hasValidCategory } from '../../lib/wordpress';
+import type { WPActivityItem } from '../../components/sections/ActivitiesSection';
+
+// Cargar posts de WordPress pertenecientes a la categoría de prácticas y pasantías
+const rawPosts = await getPosts(50);
+const internshipRawPosts = rawPosts.filter(post => {
+  if (post.slug === 'hello-world' || post.id === 1) return false;
+  if (!hasValidCategory(post)) return false;
+  const cats = getPostCategories(post);
+  return cats.some(c => {
+    const n = c.toLowerCase();
+    return n.includes('practica') || n.includes('práctica') || n.includes('pasantia') || n.includes('pasantía');
+  });
+});
+
+const initialInternshipPosts: WPActivityItem[] = internshipRawPosts.map(post => {
+  const cats = getPostCategories(post);
+  const featuredImg = getFeaturedImageUrl(post, 'https://lh3.googleusercontent.com/d/1VOAa3Fwpv9QvlaDHN7PP8mWY-jYImtzN');
+  const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+
+  return {
+    id: `wp-${post.id}`,
+    title: post.title.rendered,
+    category: cats[0] || 'Prácticas y Pasantías',
+    categories: cats,
+    description: post.excerpt.rendered.replace(/<[^>]*>?/gm, '').trim(),
+    content: post.content.rendered,
+    image: featuredImg,
+    slug: post.slug,
+    date: dateStr,
+  };
+});
 ---
 
 <Layout
   title="Prácticas y Pasantías | Programas FUNDELIBERTAD"
   description="Convocatoria para estudiantes de derecho, trabajo social y carreras afines para realizar sus prácticas en FUNDELIBERTAD."
 >
-  <ProgramSections client:load initialSubsection="internships" />
+  <ProgramSections 
+    client:load 
+    initialSubsection="internships" 
+    initialInternshipPosts={initialInternshipPosts} 
+  />
 </Layout>
