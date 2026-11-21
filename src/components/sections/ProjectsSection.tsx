@@ -288,7 +288,7 @@ export default function ProjectsSection({ wpProjects = [] }: ProjectsSectionProp
                 className="bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden text-left flex flex-col justify-between hover:shadow-md transition-all duration-300 group"
               >
                 <div>
-                  <div className="h-52 bg-slate-100 border-b border-slate-100 overflow-hidden relative flex items-center justify-center">
+                  <div className="w-full h-52 bg-slate-100 border-b border-slate-100 overflow-hidden relative flex items-center justify-center">
                     <img
                       src={proj.image}
                       alt={proj.title}

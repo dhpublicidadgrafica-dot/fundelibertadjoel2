@@ -287,7 +287,7 @@ export default function HomeSection({ onNavigate, onDonateClick, initialProjects
             className="bg-white rounded-3xl border border-slate-100 shadow-xs overflow-hidden text-left flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer group"
           >
             <div>
-              <div className="h-48 sm:h-56 relative overflow-hidden bg-slate-100 border-b border-slate-100">
+              <div className="w-full h-48 sm:h-56 relative overflow-hidden bg-slate-100 border-b border-slate-100">
                 <img
                   src={typeof pasantiasImageSrc === 'string' ? pasantiasImageSrc : (pasantiasImageSrc as any)?.src || pasantiasImageSrc}
                   alt="Pasantías y Prácticas"
@@ -322,7 +322,7 @@ export default function HomeSection({ onNavigate, onDonateClick, initialProjects
             className="bg-white rounded-3xl border border-slate-100 shadow-xs overflow-hidden text-left flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer group"
           >
             <div>
-              <div className="h-48 sm:h-56 relative overflow-hidden bg-slate-100 border-b border-slate-100">
+              <div className="w-full h-48 sm:h-56 relative overflow-hidden bg-slate-100 border-b border-slate-100">
                 <img
                   src={typeof denunciasImageSrc === 'string' ? denunciasImageSrc : (denunciasImageSrc as any)?.src || denunciasImageSrc}
                   alt="Denuncias Ciudadanas"
@@ -357,7 +357,7 @@ export default function HomeSection({ onNavigate, onDonateClick, initialProjects
             className="bg-white rounded-3xl border border-slate-100 shadow-xs overflow-hidden text-left flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer group"
           >
             <div>
-              <div className="h-48 sm:h-56 relative overflow-hidden bg-slate-100 border-b border-slate-100">
+              <div className="w-full h-48 sm:h-56 relative overflow-hidden bg-slate-100 border-b border-slate-100">
                 <img
                   src={typeof asesoriasImageSrc === 'string' ? asesoriasImageSrc : (asesoriasImageSrc as any)?.src || asesoriasImageSrc}
                   alt="Asesorías Legales"
@@ -468,7 +468,7 @@ export default function HomeSection({ onNavigate, onDonateClick, initialProjects
                 }}
               >
                 <div>
-                  <div className="h-48 relative overflow-hidden bg-slate-100 border-b border-slate-100">
+                  <div className="w-full h-48 relative overflow-hidden bg-slate-100 border-b border-slate-100">
                     <img
                       src={proj.image}
                       alt={proj.title}

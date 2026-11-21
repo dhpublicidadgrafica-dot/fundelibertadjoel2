@@ -299,25 +299,40 @@ export default function ProgramSections({
               {/* Dynamic WordPress cards for "Prácticas y Pasantías" */}
               {internshipPosts.length > 0 ? (
                 internshipPosts.map((post) => (
-                  <div key={post.id} className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                      <div className="space-y-4">
-                        <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block">
-                          {post.category || 'Prácticas y Pasantías'}
-                        </span>
+                  <div key={post.id} className="bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden">
+                    <div className="flex flex-col md:grid md:grid-cols-2 items-stretch">
+                      {post.image && (
                         <a 
                           href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
-                          className="block hover:text-blue-600 transition-colors"
+                          className="block group/img cursor-pointer w-full h-56 sm:h-64 md:h-full md:min-h-[260px] overflow-hidden bg-slate-100 relative order-first md:order-last border-b md:border-b-0 md:border-l border-slate-100"
                         >
-                          <h3 
-                            className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight hover:text-blue-600 transition-colors"
-                            dangerouslySetInnerHTML={{ __html: post.title }}
+                          <img
+                            src={post.image}
+                            alt={post.title}
+                            className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                            loading="lazy"
                           />
                         </a>
-                        <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
-                          <p>
-                            {getWordExcerpt(post.content || post.description, 50)}
-                          </p>
+                      )}
+                      <div className="p-6 md:p-8 space-y-4 flex flex-col justify-between">
+                        <div className="space-y-3">
+                          <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block">
+                            {post.category || 'Prácticas y Pasantías'}
+                          </span>
+                          <a 
+                            href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
+                            className="block hover:text-blue-600 transition-colors"
+                          >
+                            <h3 
+                              className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight hover:text-blue-600 transition-colors"
+                              dangerouslySetInnerHTML={{ __html: post.title }}
+                            />
+                          </a>
+                          <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
+                            <p>
+                              {getWordExcerpt(post.content || post.description, 50)}
+                            </p>
+                          </div>
                         </div>
 
                         {post.slug && (
@@ -333,55 +348,15 @@ export default function ProgramSections({
                           </div>
                         )}
                       </div>
-                      
-                      {post.image && (
-                        <a 
-                          href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
-                          className="block group/img cursor-pointer h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 relative"
-                        >
-                          <img
-                            src={post.image}
-                            alt={post.title}
-                            className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
-                            loading="lazy"
-                          />
-                        </a>
-                      )}
                     </div>
                   </div>
                 ))
               ) : (
                 <>
                   {/* Introduction card */}
-                  <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                      <div className="space-y-3">
-                        <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block">Prácticas Universitarias</span>
-                        <h3 className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
-                          Fortalece tu Vocación en el Territorio
-                        </h3>
-                        <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
-                          <p>
-                            La organización está en la busqueda de personas idóneas, para que aporten sus conocimiemtos e ideas, con el fin de apoyar a quienes se encuentran bajo el mandato de protección de FUNDELIBERTAD.
-                          </p>
-                          <p>
-                            El programa de pasantías/prácticas de FUNDELIBERTAD es una oportunidad para estudiantes de bachillerato y recién graduados de adquirir experiencia, acorde con su programa académico o con su trabajo próximo en alguno de los ámbitos que se hallen relacionados con la misión de FUNDELIBERTAD.
-                          </p>
-                          <p>
-                            Animamos a participar a todas aquellas personas cualificadas, sin distinción de raza, color, sexo, nacionalidad, edad, religión y discapacidad.
-                          </p>
-                          <div className="pt-3 border-t border-slate-100">
-                            <span className="font-bold text-[10px] uppercase tracking-wider text-slate-700 block mb-1">FINALIDAD</span>
-                            <p className="mb-2">Los objetivos son los siguientes:</p>
-                            <ul className="list-disc pl-4 space-y-1.5">
-                              <li>Principalmente, brindar la oportunidad de ganar experiencia laboral relacionada con sus estudios académicos o futuras oportunidades de trabajo en áreas vinculadas con el mandato de FUNDELIBERTAD.</li>
-                              <li>En segundo lugar, permitir que FUNDELIBERTAD se beneficie de la labor de los pasantes.</li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 relative">
+                  <div className="bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden">
+                    <div className="flex flex-col md:grid md:grid-cols-2 items-stretch">
+                      <div className="w-full h-56 sm:h-64 md:h-full md:min-h-[260px] overflow-hidden bg-slate-100 relative order-first md:order-last border-b md:border-b-0 md:border-l border-slate-100">
                         <img
                           src="https://lh3.googleusercontent.com/d/1VOAa3Fwpv9QvlaDHN7PP8mWY-jYImtzN"
                           alt="Prácticas universitarias FUNDELIBERTAD"
@@ -389,40 +364,68 @@ export default function ProgramSections({
                           loading="lazy"
                         />
                       </div>
+                      <div className="p-6 md:p-8 space-y-4 flex flex-col justify-between">
+                        <div className="space-y-3">
+                          <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block">Prácticas Universitarias</span>
+                          <h3 className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
+                            Fortalece tu Vocación en el Territorio
+                          </h3>
+                          <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
+                            <p>
+                              La organización está en la busqueda de personas idóneas, para que aporten sus conocimiemtos e ideas, con el fin de apoyar a quienes se encuentran bajo el mandato de protección de FUNDELIBERTAD.
+                            </p>
+                            <p>
+                              El programa de pasantías/prácticas de FUNDELIBERTAD es una oportunidad para estudiantes de bachillerato y recién graduados de adquirir experiencia, acorde con su programa académico o con su trabajo próximo en alguno de los ámbitos que se hallen relacionados con la misión de FUNDELIBERTAD.
+                            </p>
+                            <p>
+                              Animamos a participar a todas aquellas personas cualificadas, sin distinción de raza, color, sexo, nacionalidad, edad, religión y discapacidad.
+                            </p>
+                            <div className="pt-3 border-t border-slate-100">
+                              <span className="font-bold text-[10px] uppercase tracking-wider text-slate-700 block mb-1">FINALIDAD</span>
+                              <p className="mb-2">Los objetivos son los siguientes:</p>
+                              <ul className="list-disc pl-4 space-y-1.5">
+                                <li>Principalmente, brindar la oportunidad de ganar experiencia laboral relacionada con sus estudios académicos o futuras oportunidades de trabajo en áreas vinculadas con el mandato de FUNDELIBERTAD.</li>
+                                <li>En segundo lugar, permitir que FUNDELIBERTAD se beneficie de la labor de los pasantes.</li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
                   {/* Highlight Intern card */}
-                  <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                      <div className="space-y-4">
-                        <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block">Prácticas y Pasantías</span>
-                        <h3 className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
-                          Fabian Alejandro Areiza Valencia
-                        </h3>
-                        <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
-                          <p>
-                            {getWordExcerpt("Fabian Alejandro Areiza Valencia, estudiante del Servicio Nacional de Aprendizaje-SENA en el programa de Tecnología en Contabilidad y Finanzas, realiza las pasantias en FUNDELIBERTAD desde el día 5 de abril de 2021 hasta el 20 de agosto de 2021, para poder recibir su grado.", 50)}
-                          </p>
-                        </div>
-                        <div className="pt-2">
-                          <a
-                            href={url('/blog')}
-                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm hover:shadow transition-all duration-200 group/btn w-fit cursor-pointer"
-                          >
-                            <span>Leer más</span>
-                            <ChevronRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
-                          </a>
-                        </div>
-                      </div>
-                      
-                      <div className="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 relative">
+                  <div className="bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden">
+                    <div className="flex flex-col md:grid md:grid-cols-2 items-stretch">
+                      <div className="w-full h-56 sm:h-64 md:h-full md:min-h-[260px] overflow-hidden bg-slate-100 relative order-first md:order-last border-b md:border-b-0 md:border-l border-slate-100">
                         <img
                           src="https://lh3.googleusercontent.com/d/1EvbiisDrvz4JgZf3o388N7PeKMP5dxKP"
                           alt="Pasantías en Contabilidad y Finanzas - SENA"
                           className="w-full h-full object-cover"
                           loading="lazy"
                         />
+                      </div>
+                      <div className="p-6 md:p-8 space-y-4 flex flex-col justify-between">
+                        <div className="space-y-4">
+                          <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block">Prácticas y Pasantías</span>
+                          <h3 className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
+                            Fabian Alejandro Areiza Valencia
+                          </h3>
+                          <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
+                            <p>
+                              {getWordExcerpt("Fabian Alejandro Areiza Valencia, estudiante del Servicio Nacional de Aprendizaje-SENA en el programa de Tecnología en Contabilidad y Finanzas, realiza las pasantias en FUNDELIBERTAD desde el día 5 de abril de 2021 hasta el 20 de agosto de 2021, para poder recibir su grado.", 50)}
+                            </p>
+                          </div>
+                          <div className="pt-2">
+                            <a
+                              href={url('/blog')}
+                              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm hover:shadow transition-all duration-200 group/btn w-fit cursor-pointer"
+                            >
+                              <span>Leer más</span>
+                              <ChevronRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                            </a>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -484,25 +487,40 @@ export default function ProgramSections({
               {/* Dynamic WordPress cards for "Informes y Denuncias de DDHH" */}
               {reportsPosts.length > 0 ? (
                 reportsPosts.map((post) => (
-                  <div key={post.id} className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                      <div className="space-y-4">
-                        <span className="text-[10px] font-bold text-amber-700 uppercase tracking-widest block">
-                          {post.category || 'Informes y Denuncias de DDHH'}
-                        </span>
+                  <div key={post.id} className="bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden">
+                    <div className="flex flex-col md:grid md:grid-cols-2 items-stretch">
+                      {post.image && (
                         <a 
                           href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
-                          className="block hover:text-amber-800 transition-colors"
+                          className="block group/img cursor-pointer w-full h-56 sm:h-64 md:h-full md:min-h-[260px] overflow-hidden bg-slate-100 relative order-first md:order-last border-b md:border-b-0 md:border-l border-slate-100"
                         >
-                          <h3 
-                            className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight hover:text-amber-800 transition-colors"
-                            dangerouslySetInnerHTML={{ __html: post.title }}
+                          <img
+                            src={post.image}
+                            alt={post.title}
+                            className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                            loading="lazy"
                           />
                         </a>
-                        <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
-                          <p>
-                            {getWordExcerpt(post.content || post.description, 50)}
-                          </p>
+                      )}
+                      <div className="p-6 md:p-8 space-y-4 flex flex-col justify-between">
+                        <div className="space-y-3">
+                          <span className="text-[10px] font-bold text-amber-700 uppercase tracking-widest block">
+                            {post.category || 'Informes y Denuncias de DDHH'}
+                          </span>
+                          <a 
+                            href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
+                            className="block hover:text-amber-800 transition-colors"
+                          >
+                            <h3 
+                              className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight hover:text-amber-800 transition-colors"
+                              dangerouslySetInnerHTML={{ __html: post.title }}
+                            />
+                          </a>
+                          <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
+                            <p>
+                              {getWordExcerpt(post.content || post.description, 50)}
+                            </p>
+                          </div>
                         </div>
 
                         {post.slug && (
@@ -518,20 +536,6 @@ export default function ProgramSections({
                           </div>
                         )}
                       </div>
-                      
-                      {post.image && (
-                        <a 
-                          href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
-                          className="block group/img cursor-pointer h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 relative"
-                        >
-                          <img
-                            src={post.image}
-                            alt={post.title}
-                            className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
-                            loading="lazy"
-                          />
-                        </a>
-                      )}
                     </div>
                   </div>
                 ))
@@ -1091,25 +1095,40 @@ export default function ProgramSections({
               {/* Dynamic WordPress cards for "Asesoría Jurídica Gratuita" */}
               {legalPosts.length > 0 ? (
                 legalPosts.map((post) => (
-                  <div key={post.id} className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                      <div className="space-y-4">
-                        <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest block">
-                          {post.category || 'Asesoría Jurídica Gratuita'}
-                        </span>
+                  <div key={post.id} className="bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden">
+                    <div className="flex flex-col md:grid md:grid-cols-2 items-stretch">
+                      {post.image && (
                         <a 
                           href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
-                          className="block hover:text-emerald-800 transition-colors"
+                          className="block group/img cursor-pointer w-full h-56 sm:h-64 md:h-full md:min-h-[260px] overflow-hidden bg-slate-100 relative order-first md:order-last border-b md:border-b-0 md:border-l border-slate-100"
                         >
-                          <h3 
-                            className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight hover:text-emerald-800 transition-colors"
-                            dangerouslySetInnerHTML={{ __html: post.title }}
+                          <img
+                            src={post.image}
+                            alt={post.title}
+                            className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                            loading="lazy"
                           />
                         </a>
-                        <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
-                          <p>
-                            {getWordExcerpt(post.content || post.description, 50)}
-                          </p>
+                      )}
+                      <div className="p-6 md:p-8 space-y-4 flex flex-col justify-between">
+                        <div className="space-y-3">
+                          <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest block">
+                            {post.category || 'Asesoría Jurídica Gratuita'}
+                          </span>
+                          <a 
+                            href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
+                            className="block hover:text-emerald-800 transition-colors"
+                          >
+                            <h3 
+                              className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight hover:text-emerald-800 transition-colors"
+                              dangerouslySetInnerHTML={{ __html: post.title }}
+                            />
+                          </a>
+                          <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
+                            <p>
+                              {getWordExcerpt(post.content || post.description, 50)}
+                            </p>
+                          </div>
                         </div>
 
                         {post.slug && (
@@ -1125,20 +1144,6 @@ export default function ProgramSections({
                           </div>
                         )}
                       </div>
-                      
-                      {post.image && (
-                        <a 
-                          href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
-                          className="block group/img cursor-pointer h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 relative"
-                        >
-                          <img
-                            src={post.image}
-                            alt={post.title}
-                            className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
-                            loading="lazy"
-                          />
-                        </a>
-                      )}
                     </div>
                   </div>
                 ))
