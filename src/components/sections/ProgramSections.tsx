@@ -475,7 +475,7 @@ export default function ProgramSections({
                           <div className="pt-2">
                             <a
                               href={url(`/blog/${post.slug}`)}
-                              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm hover:shadow transition-all duration-200 group/btn w-fit cursor-pointer"
+                              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-sm hover:shadow transition-all duration-200 group/btn w-fit cursor-pointer"
                               id={`btn-read-more-${post.id}`}
                             >
                               <span>Leer más</span>
