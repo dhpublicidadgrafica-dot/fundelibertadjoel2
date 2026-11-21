@@ -302,15 +302,17 @@ export default function HomeSection({ onNavigate, onDonateClick, initialProjects
             className="bg-white rounded-3xl border border-slate-100 shadow-xs overflow-hidden text-left flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer group"
           >
             <div>
-              <AdaptiveImage
-                src={denunciasImageSrc}
-                alt="Denuncias Ciudadanas"
-                containerClassName="h-48 sm:h-56 relative overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center"
-              >
+              <div className="h-48 sm:h-56 relative overflow-hidden bg-slate-100 border-b border-slate-100">
+                <img
+                  src={typeof denunciasImageSrc === 'string' ? denunciasImageSrc : (denunciasImageSrc as any)?.src || denunciasImageSrc}
+                  alt="Denuncias Ciudadanas"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
                 <span className="absolute top-3 left-3 bg-amber-600 text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider z-20 shadow-xs">
                   Derechos Humanos
                 </span>
-              </AdaptiveImage>
+              </div>
               <div className="p-6 space-y-2">
                 <h3 className="font-display font-bold text-lg text-slate-950 leading-tight group-hover:text-amber-700 transition-colors">
                   Denuncias Ciudadanas
@@ -335,15 +337,17 @@ export default function HomeSection({ onNavigate, onDonateClick, initialProjects
             className="bg-white rounded-3xl border border-slate-100 shadow-xs overflow-hidden text-left flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer group"
           >
             <div>
-              <AdaptiveImage
-                src={asesoriasImageSrc}
-                alt="Asesorías Legales"
-                containerClassName="h-48 sm:h-56 relative overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center"
-              >
+              <div className="h-48 sm:h-56 relative overflow-hidden bg-slate-100 border-b border-slate-100">
+                <img
+                  src={typeof asesoriasImageSrc === 'string' ? asesoriasImageSrc : (asesoriasImageSrc as any)?.src || asesoriasImageSrc}
+                  alt="Asesorías Legales"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
                 <span className="absolute top-3 left-3 bg-brand-primary text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider z-20 shadow-xs">
                   Justicia y Paz
                 </span>
-              </AdaptiveImage>
+              </div>
               <div className="p-6 space-y-2">
                 <h3 className="font-display font-bold text-lg text-slate-950 leading-tight group-hover:text-blue-700 transition-colors">
                   Asesorías Legales
@@ -444,11 +448,14 @@ export default function HomeSection({ onNavigate, onDonateClick, initialProjects
                 }}
               >
                 <div>
-                  <AdaptiveImage
-                    src={proj.image}
-                    alt={proj.title}
-                    containerClassName="h-48 relative overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center"
-                  />
+                  <div className="h-48 relative overflow-hidden bg-slate-100 border-b border-slate-100">
+                    <img
+                      src={proj.image}
+                      alt={proj.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                  </div>
                   <div className="p-5 space-y-2">
                     <span className="inline-block px-2.5 py-0.5 rounded-md bg-sky-50 text-[10px] font-bold text-sky-700 uppercase tracking-wider">
                       {proj.category || 'Proyecto'}

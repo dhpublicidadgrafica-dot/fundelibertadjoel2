@@ -259,15 +259,17 @@ export default function ProjectsSection({ wpProjects = [] }: ProjectsSectionProp
                 className="bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden text-left flex flex-col justify-between cursor-pointer hover:shadow-md transition-all duration-300 group"
               >
                 <div>
-                  <AdaptiveImage
-                    src={proj.image}
-                    alt={proj.title}
-                    containerClassName="h-52 bg-white border-b border-slate-100 overflow-hidden relative flex items-center justify-center"
-                  >
+                  <div className="h-52 bg-slate-100 border-b border-slate-100 overflow-hidden relative flex items-center justify-center">
+                    <img
+                      src={proj.image}
+                      alt={proj.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
                     <span className="absolute top-3 left-3 bg-white/95 text-slate-800 border border-slate-200/80 shadow-xs px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider z-20">
                       {proj.category}
                     </span>
-                  </AdaptiveImage>
+                  </div>
                   <div className="p-5 space-y-2">
                     <h3 className="font-display font-bold text-sm text-slate-900 leading-snug group-hover:text-sky-800 transition-colors">
                       {proj.title}
