@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Heart, Scale, Users, ShieldAlert, ArrowRight, MessageSquare, Award, PlayCircle, Quote, Sparkles, ChevronRight } from 'lucide-react';
-import { IMPACT_STATS, SERVICES_LIST, TESTIMONIALS, LATEST_ACTIVITIES, PROJECTS_LIST } from '../../data';
+import { IMPACT_STATS, SERVICES_LIST, TESTIMONIALS, LATEST_ACTIVITIES } from '../../data';
 import Logo from '../Logo';
 
 import heroImageSrc from '../../assets/images/fundelibertad_hero_1782489663346.jpg';
@@ -13,13 +14,87 @@ import pasantiasImageSrc from '../../assets/images/pasantias_students_1782495066
 import denunciasImageSrc from '../../assets/images/denuncias_documento_handover_1782495219494.jpg';
 import asesoriasImageSrc from '../../assets/images/asesorias_legales_consultation_1782495362476.jpg';
 import AdaptiveImage from '../AdaptiveImage';
+import type { WPActivityItem } from './ActivitiesSection';
+import { url } from '../../lib/base';
 
 interface HomeSectionProps {
   onNavigate?: (page: string, subSection?: string) => void;
   onDonateClick?: () => void;
+  initialProjects?: WPActivityItem[];
 }
 
-export default function HomeSection({ onNavigate, onDonateClick }: HomeSectionProps = {}) {
+export default function HomeSection({ onNavigate, onDonateClick, initialProjects = [] }: HomeSectionProps = {}) {
+  const [projects, setProjects] = useState<WPActivityItem[]>(initialProjects);
+
+  // Sincronización en vivo desde WordPress para los 8 últimos proyectos
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchLiveWordPressProjects = async () => {
+      try {
+        const res = await fetch('https://www.csm.fundelibertad.org/wp-json/wp/v2/posts?_embed=1&per_page=50');
+        if (!res.ok) return;
+        const rawPosts = await res.json();
+        if (!Array.isArray(rawPosts) || !isMounted) return;
+
+        // REGLA: Entrada que no tenga categorías válidas NO se muestra en ningún lado
+        // Filtrar entradas que tengan categoría válida de 'proyectos'
+        const projectPosts = rawPosts.filter((post: any) => {
+          if (post.slug === 'hello-world' || post.id === 1) return false;
+          const terms: any[] = post._embedded?.['wp:term']?.[0] || [];
+          const validTerms = terms.filter((t: any) => {
+            const name = (t.name || '').toLowerCase();
+            const slug = (t.slug || '').toLowerCase();
+            return name !== 'uncategorized' && name !== 'sin categoría' && slug !== 'uncategorized';
+          });
+          if (validTerms.length === 0) return false;
+          return validTerms.some((t: any) => 
+            t.slug.toLowerCase().includes('proyecto') || 
+            t.name.toLowerCase().includes('proyecto')
+          );
+        }).slice(0, 8); // REGLA: Siempre los 8 últimos proyectos colocados, sin rellenar con mocks
+
+        const mapped: WPActivityItem[] = projectPosts.map((post: any) => {
+          const terms: any[] = post._embedded?.['wp:term']?.[0] || [];
+          const catNames = terms.map(t => t.name).filter(c => c.toLowerCase() !== 'uncategorized' && c.toLowerCase() !== 'sin categoría');
+          const specificCat = catNames.find(c => c.toLowerCase() !== 'proyectos') || catNames[0] || 'Proyectos';
+          const media = post._embedded?.['wp:featuredmedia']?.[0];
+          const featuredImg = media?.source_url || media?.media_details?.sizes?.large?.source_url || 'https://lh3.googleusercontent.com/d/11y3-Zw7P020zrMq6cakM0RrvsjrFlzW5';
+          const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+          });
+
+          return {
+            id: `wp-${post.id}`,
+            title: post.title.rendered,
+            category: specificCat,
+            categories: catNames,
+            description: post.excerpt.rendered.replace(/<[^>]*>?/gm, '').trim(),
+            content: post.content.rendered,
+            image: featuredImg,
+            slug: post.slug,
+            date: dateStr,
+          };
+        });
+
+        if (isMounted && mapped.length > 0) {
+          setProjects(mapped);
+        }
+      } catch (err) {
+        console.error('Error sincronizando proyectos en Home:', err);
+      }
+    };
+
+    fetchLiveWordPressProjects();
+    window.addEventListener('focus', fetchLiveWordPressProjects);
+    return () => {
+      isMounted = false;
+      window.removeEventListener('focus', fetchLiveWordPressProjects);
+    };
+  }, []);
+
   const handleDonate = () => {
     if (onDonateClick) {
       onDonateClick();
@@ -34,19 +109,19 @@ export default function HomeSection({ onNavigate, onDonateClick }: HomeSectionPr
       return;
     }
     if (typeof window === 'undefined') return;
-    if (page === 'home') window.location.href = '/';
-    else if (page === 'about') window.location.href = '/nosotros';
-    else if (page === 'services') window.location.href = '/servicios';
-    else if (page === 'projects') window.location.href = '/proyectos';
-    else if (page === 'activities') window.location.href = '/actividades';
-    else if (page === 'contact') window.location.href = '/contacto';
-    else if (page === 'blog') window.location.href = '/blog';
+    if (page === 'home') window.location.href = url('/');
+    else if (page === 'about') window.location.href = url('/nosotros');
+    else if (page === 'services') window.location.href = url('/servicios');
+    else if (page === 'projects') window.location.href = url('/proyectos');
+    else if (page === 'activities') window.location.href = url('/actividades');
+    else if (page === 'contact') window.location.href = url('/contacto');
+    else if (page === 'blog') window.location.href = url('/blog');
     else if (page === 'programs') {
-      if (subSection === 'reports') window.location.href = '/programas/informes-denuncias-ddhh';
-      else if (subSection === 'legal') window.location.href = '/programas/asesoria-juridica-comunitaria';
-      else window.location.href = '/programas/practicas-pasantias';
+      if (subSection === 'reports') window.location.href = url('/programas/informes-denuncias-ddhh');
+      else if (subSection === 'legal') window.location.href = url('/programas/asesoria-juridica-comunitaria');
+      else window.location.href = url('/programas/practicas-pasantias');
     } else {
-      window.location.href = `/${page}`;
+      window.location.href = url(`/${page}`);
     }
   };
 
@@ -341,54 +416,64 @@ export default function HomeSection({ onNavigate, onDonateClick }: HomeSectionPr
               Nuestros Proyectos de Impacto
             </h2>
           </div>
-          <button
+          <a
             id="view-all-projects-btn"
-            onClick={() => navigateTo('projects')}
+            href={url('/proyectos')}
             className="text-xs font-bold text-brand-primary hover:text-blue-800 flex items-center gap-1 cursor-pointer transition-colors"
           >
             Ver todos los proyectos
             <ArrowRight className="w-4 h-4" />
-          </button>
+          </a>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {PROJECTS_LIST.map((proj) => (
-            <div
-              id={`project-card-${proj.id}`}
-              key={proj.id}
-              className="bg-white rounded-3xl border border-slate-100 shadow-xs overflow-hidden text-left flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer group"
-              onClick={() => navigateTo('projects')}
-            >
-              <div>
-                <AdaptiveImage
-                  src={proj.image}
-                  alt={proj.title}
-                  containerClassName="h-48 relative overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center"
-                />
-                <div className="p-6 space-y-2">
-                  <h3 className="font-display font-bold text-base text-slate-900 leading-snug group-hover:text-sky-700 transition-colors">
-                    {proj.title}
-                  </h3>
-                  <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
-                    {proj.description}
-                  </p>
+        {projects.length === 0 ? (
+          <div className="bg-white rounded-3xl p-12 text-center border border-dashed border-slate-200">
+            <p className="text-sm text-slate-500 font-medium">No hay proyectos publicados actualmente en WordPress.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {projects.map((proj) => (
+              <div
+                id={`project-card-${proj.id}`}
+                key={proj.id}
+                className="bg-white rounded-3xl border border-slate-100 shadow-xs overflow-hidden text-left flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer group"
+                onClick={() => {
+                  window.location.href = proj.slug ? url(`/blog/${proj.slug}`) : url('/proyectos');
+                }}
+              >
+                <div>
+                  <AdaptiveImage
+                    src={proj.image}
+                    alt={proj.title}
+                    containerClassName="h-48 relative overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center"
+                  />
+                  <div className="p-5 space-y-2">
+                    <span className="inline-block px-2.5 py-0.5 rounded-md bg-sky-50 text-[10px] font-bold text-sky-700 uppercase tracking-wider">
+                      {proj.category || 'Proyecto'}
+                    </span>
+                    <h3 
+                      className="font-display font-bold text-sm sm:text-base text-slate-900 leading-snug group-hover:text-sky-700 transition-colors line-clamp-2"
+                      dangerouslySetInnerHTML={{ __html: proj.title }}
+                    />
+                    <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                      {proj.description}
+                    </p>
+                  </div>
+                </div>
+                <div className="p-5 pt-0">
+                  <a
+                    href={proj.slug ? url(`/blog/${proj.slug}`) : url('/proyectos')}
+                    onClick={(e) => e.stopPropagation()}
+                    className="w-full px-3 py-2 bg-slate-50 hover:bg-sky-50 hover:text-sky-700 text-slate-700 text-xs font-bold rounded-xl transition-colors inline-flex items-center justify-center gap-1.5 cursor-pointer border border-slate-100"
+                  >
+                    Saber más
+                    <ChevronRightIcon />
+                  </a>
                 </div>
               </div>
-              <div className="p-6 pt-0">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigateTo('projects');
-                  }}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors inline-flex items-center justify-center gap-1 cursor-pointer"
-                >
-                  Saber más
-                  <ChevronRightIcon />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* 6. DONATION HERO BANNER SECTION */}

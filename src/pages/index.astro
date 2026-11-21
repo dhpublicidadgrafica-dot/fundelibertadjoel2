@@ -2,16 +2,55 @@
 import Layout from '../layouts/Layout.astro';
 import HomeSection from '../components/sections/HomeSection';
 import { getPosts, getFeaturedImageUrl, getPostCategories, hasValidCategory } from '../lib/wordpress';
+import type { WPActivityItem } from '../components/sections/ActivitiesSection';
 import { ArrowRight, Calendar, Newspaper } from 'lucide-react';
 import { url } from '../lib/base';
 
-const rawPosts = await getPosts(10);
+const rawPosts = await getPosts(50);
 // REGLA: Entrada que no tenga categorías no mostrarla en ningún lado
-const posts = rawPosts.filter(hasValidCategory).slice(0, 3);
+const validPosts = rawPosts.filter(hasValidCategory);
+
+// Últimas 3 entradas para la sección del blog
+const posts = validPosts.slice(0, 3);
+
+// REGLA: En "Nuestros Proyectos de Impacto", mostrar siempre los 8 últimos proyectos publicados en WordPress (sin añadir mock)
+const wpProjectPosts = validPosts
+  .filter((post) => {
+    const cats = getPostCategories(post);
+    return cats.some((c) => c.toLowerCase().includes('proyecto'));
+  })
+  .slice(0, 8);
+
+const homeProjects: WPActivityItem[] = wpProjectPosts.map((post) => {
+  const cats = getPostCategories(post);
+  const featuredImg = getFeaturedImageUrl(
+    post,
+    'https://lh3.googleusercontent.com/d/11y3-Zw7P020zrMq6cakM0RrvsjrFlzW5'
+  );
+  const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+  const specificCat =
+    cats.find((c) => c.toLowerCase() !== 'proyectos') || cats[0] || 'Proyectos';
+
+  return {
+    id: `wp-${post.id}`,
+    title: post.title.rendered,
+    category: specificCat,
+    categories: cats,
+    description: post.excerpt.rendered.replace(/<[^>]*>?/gm, '').trim(),
+    content: post.content.rendered,
+    image: featuredImg,
+    slug: post.slug,
+    date: dateStr,
+  };
+});
 ---
 
 <Layout title="FUNDELIBERTAD | Inicio - Defendiendo los Derechos Humanos">
-  <HomeSection client:load />
+  <HomeSection client:load initialProjects={homeProjects} />
 
   {/* SECCIÓN DEL BLOG DE WORDPRESS */}
   <section class="py-16 border-t border-sky-100" id="latest-blog-posts">
