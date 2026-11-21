@@ -43,6 +43,26 @@ const TAB_URL_MAP: Record<string, string> = {
   'legal': '/programas/asesoria-juridica-comunitaria',
 };
 
+const getWordExcerpt = (textOrHtml: string, maxWords: number = 300): string => {
+  if (!textOrHtml) return '';
+  const plain = textOrHtml
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  const words = plain.split(' ');
+  if (words.length <= maxWords) return plain;
+  return words.slice(0, maxWords).join(' ') + '...';
+};
+
 export default function ProgramSections({ initialSubsection = 'internships', initialInternshipPosts = [] }: ProgramSectionsProps) {
   const resolveTab = () => {
     return SUBSECTION_MAP[initialSubsection] || initialSubsection;
@@ -222,26 +242,50 @@ export default function ProgramSections({ initialSubsection = 'internships', ini
                 internshipPosts.map((post) => (
                   <div key={post.id} className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                      <div className="space-y-3">
+                      <div className="space-y-4">
                         <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block">
-                          {post.category || 'Prácticas Universitarias'}
+                          {post.category || 'Prácticas y Pasantías'}
                         </span>
-                        <h3 
-                          className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight"
-                          dangerouslySetInnerHTML={{ __html: post.title }}
-                        />
-                        <div 
-                          className="text-xs text-slate-500 space-y-3 leading-relaxed wp-content"
-                          dangerouslySetInnerHTML={{ __html: post.content || post.description }}
-                        />
+                        <a 
+                          href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
+                          className="block hover:text-blue-600 transition-colors"
+                        >
+                          <h3 
+                            className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight hover:text-blue-600 transition-colors"
+                            dangerouslySetInnerHTML={{ __html: post.title }}
+                          />
+                        </a>
+                        <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
+                          <p>
+                            {getWordExcerpt(post.content || post.description, 300)}
+                          </p>
+                        </div>
+
+                        {post.slug && (
+                          <div className="pt-2">
+                            <a
+                              href={url(`/blog/${post.slug}`)}
+                              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm hover:shadow transition-all duration-200 group/btn w-fit cursor-pointer"
+                              id={`btn-read-more-${post.id}`}
+                            >
+                              <span>Leer más</span>
+                              <ChevronRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                            </a>
+                          </div>
+                        )}
                       </div>
                       
                       {post.image && (
-                        <AdaptiveImage
-                          src={post.image}
-                          alt={post.title}
-                          containerClassName="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-white border border-slate-200/80"
-                        />
+                        <a 
+                          href={post.slug ? url(`/blog/${post.slug}`) : '#'} 
+                          className="block group/img cursor-pointer"
+                        >
+                          <AdaptiveImage
+                            src={post.image}
+                            alt={post.title}
+                            containerClassName="h-64 md:h-full min-h-[250px] rounded-xl overflow-hidden bg-white border border-slate-200/80 group-hover/img:opacity-95 transition-opacity"
+                          />
+                        </a>
                       )}
                     </div>
                   </div>
@@ -288,15 +332,24 @@ export default function ProgramSections({ initialSubsection = 'internships', ini
                   {/* Highlight Intern card */}
                   <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 md:p-8 space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                      <div className="space-y-3">
-                        <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block">Pasante</span>
+                      <div className="space-y-4">
+                        <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block">Prácticas y Pasantías</span>
                         <h3 className="font-display font-black text-xl md:text-2xl text-slate-900 tracking-tight leading-tight">
                           Fabian Alejandro Areiza Valencia
                         </h3>
                         <div className="text-xs text-slate-500 space-y-3 leading-relaxed">
                           <p>
-                            Fabian Alejandro Areiza Valencia, estudiante del Servicio Nacional de Aprendizaje-SENA en el programa de Tecnología en Contabilidad y Finanzas, realiza las pasantías en FUNDELIBERTAD desde el día 5 de abril de 2021 hasta el 20 de agosto de 2021, para poder recibir su grado.
+                            {getWordExcerpt("Fabian Alejandro Areiza Valencia, estudiante del Servicio Nacional de Aprendizaje-SENA en el programa de Tecnología en Contabilidad y Finanzas, realiza las pasantias en FUNDELIBERTAD desde el día 5 de abril de 2021 hasta el 20 de agosto de 2021, para poder recibir su grado.", 300)}
                           </p>
+                        </div>
+                        <div className="pt-2">
+                          <a
+                            href={url('/blog')}
+                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm hover:shadow transition-all duration-200 group/btn w-fit cursor-pointer"
+                          >
+                            <span>Leer más</span>
+                            <ChevronRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                          </a>
                         </div>
                       </div>
                       
