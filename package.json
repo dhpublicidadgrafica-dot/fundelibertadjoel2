@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "ASTRO_TELEMETRY_DISABLED=1 XDG_CONFIG_HOME=/tmp/.config astro dev",
-    "build": "ASTRO_TELEMETRY_DISABLED=1 XDG_CONFIG_HOME=/tmp/.config astro build",
-    "preview": "ASTRO_TELEMETRY_DISABLED=1 XDG_CONFIG_HOME=/tmp/.config astro preview"
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
   },
   "keywords": [],
   "author": "",
