@@ -4,8 +4,8 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  // En Vercel corre en la raíz '/', en GitHub Pages usa '/fundelibertad'
-  base: process.env.VERCEL ? '/' : (process.env.ASTRO_BASE || '/fundelibertad'),
+  // En Vercel corre en la raíz '/', en GitHub Pages usa '/fundelibertadjoel2'
+  base: process.env.VERCEL ? '/' : (process.env.ASTRO_BASE || '/fundelibertadjoel2'),
   integrations: [react()],
   vite: {
     plugins: [tailwindcss()]
