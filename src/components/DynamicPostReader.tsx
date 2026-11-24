@@ -25,24 +25,33 @@ interface WPPost {
   };
 }
 
-export default function DynamicPostReader() {
-  const [loading, setLoading] = useState(true);
-  const [post, setPost] = useState<WPPost | null>(null);
-  const [isBlogRoute, setIsBlogRoute] = useState(false);
-  const [slug, setSlug] = useState<string>('');
+export interface DynamicPostReaderProps {
+  initialPost?: WPPost | null;
+  initialSlug?: string;
+}
+
+export default function DynamicPostReader({ initialPost = null, initialSlug = '' }: DynamicPostReaderProps) {
+  const [loading, setLoading] = useState(!initialPost);
+  const [post, setPost] = useState<WPPost | null>(initialPost);
+  const [isBlogRoute, setIsBlogRoute] = useState(true);
+  const [slug, setSlug] = useState<string>(initialSlug);
 
   useEffect(() => {
-    // Analizar la ruta actual en el navegador
-    const pathname = window.location.pathname;
-    const blogMatch = pathname.match(/\/blog\/([^/?#]+)/i);
+    let targetSlug = initialSlug;
+    if (!targetSlug && typeof window !== 'undefined') {
+      const pathname = window.location.pathname;
+      const blogMatch = pathname.match(/\/blog\/([^/?#]+)/i);
+      if (blogMatch && blogMatch[1]) {
+        targetSlug = decodeURIComponent(blogMatch[1]);
+      }
+    }
 
-    if (blogMatch && blogMatch[1]) {
-      const extractedSlug = decodeURIComponent(blogMatch[1]);
-      setSlug(extractedSlug);
+    if (targetSlug) {
+      setSlug(targetSlug);
       setIsBlogRoute(true);
 
-      // Cargar en vivo la entrada desde la API de WordPress
-      fetch(`https://www.csm.fundelibertad.org/wp-json/wp/v2/posts?slug=${encodeURIComponent(extractedSlug)}&_embed=1`)
+      // Sincronizar en vivo con la API de WordPress para reflejar siempre los cambios más recientes
+      fetch(`https://www.csm.fundelibertad.org/wp-json/wp/v2/posts?slug=${encodeURIComponent(targetSlug)}&_embed=1`)
         .then((res) => {
           if (!res.ok) throw new Error('Error al consultar WordPress');
           return res.json();
@@ -51,13 +60,12 @@ export default function DynamicPostReader() {
           if (Array.isArray(posts) && posts.length > 0) {
             setPost(posts[0]);
             document.title = `${posts[0].title.rendered} | FUNDELIBERTAD Blog`;
-          } else {
+          } else if (!initialPost) {
             setPost(null);
           }
         })
         .catch((err) => {
-          console.error('Error cargando entrada dinámica:', err);
-          setPost(null);
+          console.error('Error sincronizando entrada dinámica:', err);
         })
         .finally(() => {
           setLoading(false);
@@ -66,7 +74,7 @@ export default function DynamicPostReader() {
       setIsBlogRoute(false);
       setLoading(false);
     }
-  }, []);
+  }, [initialSlug]);
 
   if (loading) {
     return (
