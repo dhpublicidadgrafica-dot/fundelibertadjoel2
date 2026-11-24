@@ -16,6 +16,7 @@ import legalImg from '../../assets/images/fundelibertad_legal_1782489703836.jpg'
 import AdaptiveImage from '../AdaptiveImage';
 import type { WPActivityItem } from './ActivitiesSection';
 import { url } from '../../lib/base';
+import { getFeaturedImageUrl } from '../../lib/wordpress';
 
 interface ProgramSectionsProps {
   initialSubsection?: string;
@@ -158,8 +159,7 @@ export default function ProgramSections({
         const mapPost = (post: any, defaultCat: string) => {
           const terms: any[] = post._embedded?.['wp:term']?.[0] || [];
           const catNames = terms.map((t: any) => t.name).filter((c: string) => c.toLowerCase() !== 'uncategorized' && c.toLowerCase() !== 'sin categoría');
-          const media = post._embedded?.['wp:featuredmedia']?.[0];
-          const featuredImg = media?.source_url || media?.media_details?.sizes?.large?.source_url || 'https://lh3.googleusercontent.com/d/1VOAa3Fwpv9QvlaDHN7PP8mWY-jYImtzN';
+          const featuredImg = getFeaturedImageUrl(post);
           const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
             year: 'numeric',
             month: 'short',

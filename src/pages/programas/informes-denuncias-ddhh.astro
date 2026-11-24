@@ -23,7 +23,7 @@ const reportsRawPosts = rawPosts.filter(post => {
 
 const initialReportsPosts: WPActivityItem[] = reportsRawPosts.map(post => {
   const cats = getPostCategories(post);
-  const featuredImg = getFeaturedImageUrl(post, 'https://lh3.googleusercontent.com/d/1VOAa3Fwpv9QvlaDHN7PP8mWY-jYImtzN');
+  const featuredImg = getFeaturedImageUrl(post);
   const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
     year: 'numeric',
     month: 'short',

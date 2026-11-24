@@ -30,7 +30,7 @@ const mappedWpProjects: WPActivityItem[] = wpProjectPosts.map((post) => {
   const allCats = getPostCategories(post);
   const projectCats = allCats.filter(c => !isNonProjectCategory(c));
   const validCats = projectCats.length > 0 ? projectCats : ['Proyectos'];
-  const featuredImg = getFeaturedImageUrl(post, 'https://lh3.googleusercontent.com/d/11y3-Zw7P020zrMq6cakM0RrvsjrFlzW5');
+  const featuredImg = getFeaturedImageUrl(post);
   const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
     year: 'numeric',
     month: 'short',

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Calendar, User, ArrowLeft, Heart, MessageCircle, Loader2, AlertCircle, Home } from 'lucide-react';
 import { url } from '../lib/base';
+import { getFeaturedImageUrl } from '../lib/wordpress';
 
 interface WPPost {
   id: number;
@@ -124,8 +125,7 @@ export default function DynamicPostReader() {
     });
 
   const isProject = categories.some((c) => c.toLowerCase().includes('proyecto'));
-  const media = post._embedded?.['wp:featuredmedia']?.[0];
-  const featuredImg = media?.source_url || media?.media_details?.sizes?.large?.source_url || 'https://lh3.googleusercontent.com/d/1mzMGHUgDdHcX8hpf8DTMLIs2Dv53CCsd';
+  const featuredImg = getFeaturedImageUrl(post);
   const authorName = post._embedded?.author?.[0]?.name || 'Fundelibertad';
   const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
     year: 'numeric',
@@ -238,3 +238,4 @@ export default function DynamicPostReader() {
     </article>
   );
 }
+

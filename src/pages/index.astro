@@ -18,10 +18,7 @@ const wpProjectPosts = validPosts
 
 const homeProjects: WPActivityItem[] = wpProjectPosts.map((post) => {
   const cats = getPostCategories(post);
-  const featuredImg = getFeaturedImageUrl(
-    post,
-    'https://lh3.googleusercontent.com/d/11y3-Zw7P020zrMq6cakM0RrvsjrFlzW5'
-  );
+  const featuredImg = getFeaturedImageUrl(post);
   const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
     year: 'numeric',
     month: 'short',

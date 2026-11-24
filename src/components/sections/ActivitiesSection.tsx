@@ -9,6 +9,7 @@ import { Calendar, Eye, X, ArrowRight, Search, RefreshCw, ChevronRight } from 'l
 import { LATEST_ACTIVITIES } from '../../data';
 import AdaptiveImage from '../AdaptiveImage';
 import { url } from '../../lib/base';
+import { getFeaturedImageUrl } from '../../lib/wordpress';
 
 const getWordExcerpt = (textOrHtml: string, maxWords: number = 50): string => {
   if (!textOrHtml) return '';
@@ -110,8 +111,7 @@ export default function ActivitiesSection({ wpActivities = [] }: ActivitiesSecti
               return lower !== 'uncategorized' && lower !== 'sin categoría';
             });
           const specificCat = catNames.find(c => c.toLowerCase() !== 'actividades') || catNames[0] || 'Actividades';
-          const media = post._embedded?.['wp:featuredmedia']?.[0];
-          const featuredImg = media?.source_url || media?.media_details?.sizes?.large?.source_url || 'https://lh3.googleusercontent.com/d/1mzMGHUgDdHcX8hpf8DTMLIs2Dv53CCsd';
+          const featuredImg = getFeaturedImageUrl(post);
           const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
             year: 'numeric',
             month: 'short',

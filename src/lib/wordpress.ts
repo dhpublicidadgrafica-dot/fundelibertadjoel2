@@ -130,12 +130,63 @@ export async function getPostsByCategory(categorySlug: string, perPage = 30): Pr
   }
 }
 
+export const DEFAULT_FALLBACK_IMAGES = {
+  actividades: 'https://lh3.googleusercontent.com/d/1mzMGHUgDdHcX8hpf8DTMLIs2Dv53CCsd',
+  proyectos: 'https://lh3.googleusercontent.com/d/11y3-Zw7P020zrMq6cakM0RrvsjrFlzW5',
+  programas: 'https://lh3.googleusercontent.com/d/1VOAa3Fwpv9QvlaDHN7PP8mWY-jYImtzN',
+};
+
 /**
- * Helper para extraer la URL de la imagen destacada
+ * Helper para determinar la imagen predeterminada de una entrada según su categoría
  */
-export function getFeaturedImageUrl(post: WPPost, fallback = '/fundelibertad-logo.png'): string {
+export function getDefaultImageForPost(post: WPPost | any): string {
+  const cats = getPostCategories(post);
+  const catsLower = cats.map(c => c.toLowerCase());
+
+  if (catsLower.some(c => c.includes('proyecto'))) {
+    return DEFAULT_FALLBACK_IMAGES.proyectos;
+  }
+  if (catsLower.some(c => 
+    c.includes('asesoria') || c.includes('asesoría') || 
+    c.includes('juridica') || c.includes('jurídica') || 
+    c.includes('legal') || c.includes('informe') || 
+    c.includes('denuncia') || c.includes('ddhh') || 
+    c.includes('practica') || c.includes('práctica') || 
+    c.includes('pasantia') || c.includes('pasantía') ||
+    c.includes('programa')
+  )) {
+    return DEFAULT_FALLBACK_IMAGES.programas;
+  }
+  return DEFAULT_FALLBACK_IMAGES.actividades;
+}
+
+/**
+ * Helper unificado para extraer la URL de la imagen de una entrada:
+ * 1. Imagen destacada oficial de WordPress (_embedded['wp:featuredmedia'][0])
+ * 2. Si no tiene imagen destacada, busca la primera imagen dentro del contenido HTML
+ * 3. Si se pasa un fallback explícito, lo usa
+ * 4. Si no, usa el fallback correspondiente a la categoría de la entrada
+ * Esto garantiza que la imagen de la CARD y la del DETALLE siempre sean exactamente la misma.
+ */
+export function getFeaturedImageUrl(post: WPPost | any, fallback?: string): string {
+  // 1. Featured Media de WordPress
   const media = post._embedded?.['wp:featuredmedia']?.[0];
-  return media?.source_url || media?.media_details?.sizes?.large?.source_url || fallback;
+  const mediaUrl = media?.source_url || media?.media_details?.sizes?.large?.source_url || media?.media_details?.sizes?.full?.source_url;
+  if (mediaUrl) return mediaUrl;
+
+  // 2. Primera imagen en el contenido de la entrada
+  if (post.content?.rendered) {
+    const match = post.content.rendered.match(/<img[^>]+src=["']([^"']+)["']/i);
+    if (match && match[1]) {
+      return match[1];
+    }
+  }
+
+  // 3. Fallback explícito
+  if (fallback) return fallback;
+
+  // 4. Fallback inteligente según categoría
+  return getDefaultImageForPost(post);
 }
 
 /**

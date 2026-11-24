@@ -20,7 +20,7 @@ if (!post) {
   return Astro.redirect(url('/blog'));
 }
 
-const featuredImg = getFeaturedImageUrl(post, 'https://lh3.googleusercontent.com/d/1mzMGHUgDdHcX8hpf8DTMLIs2Dv53CCsd');
+const featuredImg = getFeaturedImageUrl(post);
 const categories = getPostCategories(post);
 const isProject = categories.some((c: string) => c.toLowerCase().includes('proyecto'));
 const authorName = getAuthorName(post);

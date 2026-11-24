@@ -55,7 +55,7 @@ const categories = rawCategories.filter(c => c.slug !== 'uncategorized' && c.nam
     ) : (
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {posts.map((post) => {
-          const featuredImg = getFeaturedImageUrl(post, 'https://lh3.googleusercontent.com/d/1mzMGHUgDdHcX8hpf8DTMLIs2Dv53CCsd');
+          const featuredImg = getFeaturedImageUrl(post);
           const postCats = getPostCategories(post);
           const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
             year: 'numeric',

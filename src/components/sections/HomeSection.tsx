@@ -15,6 +15,7 @@ import asesoriasImageSrc from '../../assets/images/asesorias_legales_consultatio
 import AdaptiveImage from '../AdaptiveImage';
 import type { WPActivityItem } from './ActivitiesSection';
 import { url } from '../../lib/base';
+import { getFeaturedImageUrl } from '../../lib/wordpress';
 
 const getWordExcerpt = (textOrHtml: string, maxWords: number = 50): string => {
   if (!textOrHtml) return '';
@@ -77,8 +78,7 @@ export default function HomeSection({ onNavigate, onDonateClick, initialProjects
           const terms: any[] = post._embedded?.['wp:term']?.[0] || [];
           const catNames = terms.map(t => t.name).filter(c => c.toLowerCase() !== 'uncategorized' && c.toLowerCase() !== 'sin categoría');
           const specificCat = catNames.find(c => c.toLowerCase() !== 'proyectos') || catNames[0] || 'Proyectos';
-          const media = post._embedded?.['wp:featuredmedia']?.[0];
-          const featuredImg = media?.source_url || media?.media_details?.sizes?.large?.source_url || 'https://lh3.googleusercontent.com/d/11y3-Zw7P020zrMq6cakM0RrvsjrFlzW5';
+          const featuredImg = getFeaturedImageUrl(post);
           const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
             year: 'numeric',
             month: 'short',

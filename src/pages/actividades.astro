@@ -15,7 +15,7 @@ const wpPosts = allWpPosts.filter((post) => {
 
 const mappedActivities: WPActivityItem[] = wpPosts.map((post) => {
   const cats = getPostCategories(post);
-  const featuredImg = getFeaturedImageUrl(post, 'https://lh3.googleusercontent.com/d/1mzMGHUgDdHcX8hpf8DTMLIs2Dv53CCsd');
+  const featuredImg = getFeaturedImageUrl(post);
   const dateStr = new Date(post.date).toLocaleDateString('es-CO', {
     year: 'numeric',
     month: 'short',
